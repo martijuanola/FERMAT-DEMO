@@ -1,8 +1,18 @@
 
-/* CLASSES */
+/* ********** CLASSES ********** */
+
 class Regio {
+    /**
+     * Índex de refracció uniforme en la regió.
+     */
     n;
+    /**
+     * Component y del punt d'intersecció del raig en la superfície dreta de la regió.
+     */
     y;
+    /**
+     * Velocitat de propagació de la llum uniforme en la regió.
+     */
     v; //TODO: segurament pot ser calculada
 
 
@@ -32,7 +42,7 @@ class Regio {
 
 }
 
-/* CONSTANTS */
+/* ********** CONSTANTS ********** */
 
 /**
  * Velocitat de la llum en el buit.
@@ -47,7 +57,7 @@ const c = 1;
 const ampladaRegio = 1;
 
 
-/* VARIABLES */
+/* ********** VARIABLES ********** */
 
 /**
  * Valor màxim del canvi aleatori en y(i).
@@ -69,6 +79,38 @@ let y = []; // Coordenades aleatòries y de la trajectòria
 let n1, n2; // Índexs de refracció dels medis
 let v1, v2; // Velocitat propagació de la llum en el dos medis
 
+
+/* ********** FUNCIONS BÀSIQUES P5.JS ********** */
+
+/**
+ * Codi executat una sola vegada a l'inici del programa.
+ * Mètode propi de p5.js.
+ */
+function setup() {
+    var canvas = createCanvas(800, 400);
+    canvas.parent("myCanvas");
+
+    apartat_a();
+    setup_random_y_trajectories();
+    crea_N_slider();
+}
+
+
+/**
+ * Codi executat indefinidament fins que s'atura l'execució del programa,
+ * Mètode propi de p5.js
+ */
+function draw() {
+    background(255);
+
+    draw_canvas_vora();
+    draw_regions();
+    trajectoria_llum();
+
+    calcular_trajectoria();
+}
+
+/* ********** ALTRES ********** */
 
 
 
@@ -211,33 +253,4 @@ function calcular_trajectoria() {
     if (t_prop_nou < t_prop) {
         y = y_noves.slice(); // acceptem el canvi
     }
-}
-
-
-/**
- * Codi executat una sola vegada a l'inici del programa.
- * Mètode propi de p5.js.
- */
-function setup() {
-    var canvas = createCanvas(800, 400);
-    canvas.parent("myCanvas");
-
-    apartat_a();
-    setup_random_y_trajectories();
-    crea_N_slider();
-}
-
-
-/**
- * Codi executat indefinidament fins que s'atura l'execució del programa,
- * Mètode propi de p5.js
- */
-function draw() {
-    background(255);
-    
-    draw_canvas_vora();
-    draw_regions();
-    trajectoria_llum();
-
-    calcular_trajectoria();
 }
