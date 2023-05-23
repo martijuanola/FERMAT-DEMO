@@ -21,13 +21,17 @@
         <h1> DEMOSTRACIÓ DEL PRINCIPI DE FERMAT </h1>
         <h2 class="afegir-marge"> El camí recorregut per la llum en propagar-se des d'un punt a un altre és el que fa que el temps de propagació de la llum sigui mínim. </h2>
     </div>
-    <div class="container-fluid centrar mida-fila d-flex flex-column">
+    <div class="container-fluid mida-fila d-flex flex-column">
         <div class="row h-25">
-            <div class="col-lg-3 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
+            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
                 <h3> Paràmetres </h3>
-                Aqui es farà un slider per cada paràmetre per poder canviar els valor de l'execució
+                <p> N Regions: <div id="container-slider"></div> </p>
             </div>
-            <div class="col-lg-9 centrar pintat-bg vora-custom">
+            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
+                <h3> Valors </h3>
+                <div id="yValues"></div>
+            </div>
+            <div class="col-lg-8 centrar pintat-bg vora-custom">
                 <h3> Demostració del principi</h3>
                 <div id="myCanvas"></div>
             </div>
