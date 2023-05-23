@@ -1,43 +1,70 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <!-- fav.ico -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <!-- Imports necessaris per afegir els estils i bootstrap! (tot compilat perquè funcioni en local)-->
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="js/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <script src="js/bootstrap.min.js"></script>
-
-    <!-- p5.js -->
-    <script src="lib/p5.min.js"></script>
-
     <!-- Script que conté el principi de Fermat -->
+    <script src="lib/p5.min.js"></script>
     <script src="src/principi-fermat.js"></script>
 
     <title>Pràctica de Simulació: Principi de Fermat</title>
+
 </head>
-<body>
-    <div class="container-fluid centrar">
-        <h1>DEMOSTRACIÓ DEL PRINCIPI DE FERMAT</h1>
-        <h2 class="afegir-marge">El camí recorregut per la llum en propagar-se des d'un punt a un altre és el que fa que el temps de propagació de la llum sigui mínim.</h2>
+<body class="pintat-bg">
+  <!--<script src="fermat.js"></script> -->
+    <div class="container-fluid centrar afegir-marge">
+        <h1> DEMOSTRACIÓ DEL PRINCIPI DE FERMAT </h1>
+        <h2 class="afegir-marge"> El camí recorregut per la llum en propagar-se des d'un punt a un altre és el que fa que el temps de propagació de la llum sigui mínim. </h2>
     </div>
-    <div class="container-fluid mida-fila d-flex flex-column">
+    <div class="container-fluid centrar mida-fila pintat-bg vora-custom">
+        <h3> USER-GUIDE </h3>
+        <p class="afegir-marge"> Aqui posem la guia per saber com fer funcionar el simulador </p>
+    </div>
+    <div class="container-fluid mida-fila d-flex flex-column pintat-bg">
         <div class="row h-25">
-            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantalla bootstrap divideix "el viewport en 12 parts/columnes"-->
-                <h3>Paràmetres</h3>
-                <p>N Regions:</p><div id="container-slider"></div>
+            <div class="col-md-2 vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
+                <h3> Paràmetres </h3>
+                <div class="row">
+                    <div class="col">
+                        <label for="nValue">Nombre Regions:</label>
+                        <div id="container-slider"></div>
+                    </div>
+                    <div class="col">
+                        <label for="delta">Delta:</label>
+                        <div id="container-delta"></div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <h3>Valors genèrics</h3>
+                        <ul>
+                            <li id="distancia-calculada"> </li>
+                            <li id="temps-prop-calculat"> </li>
+                            <li id="iterations"> </li>
+                            <li> Distancia real calculada </li>
+                            <li> Error en el càlcul: </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantalla bootstrap divideix "el viewport en 12 parts/columnes"-->
-                <h3>Valors</h3>
+            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
+                <h3> Valors </h3>
                 <div id="yValues"></div>
             </div>
-            <div class="col-lg-8 centrar pintat-bg vora-custom">
-                <h3>Demostració del principi</h3>
+            <div class="col-md-8 centrar pintat-bg vora-custom">
+                <h3> Demostració del principi</h3>
                 <div id="myCanvas"></div>
             </div>
         </div>
     </div>
 </body>
 </html>
+
+
