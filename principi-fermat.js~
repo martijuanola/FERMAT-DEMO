@@ -2,7 +2,7 @@
 let N = 10; // Nombre de regions
 let n1, n2; // Índexs de refracció dels medis
 let v1, v2; // Velocitat propagació de la llum en el dos medis
-let delta = 20; // delta := valor màxim del canvi random en y(i)
+let delta = 50; // delta := valor màxim del canvi random en y(i)
 let c = 1; //Velocitat de la llum
 
 let y = []; // Coordenades aleatòries y de la trajectòria
@@ -115,14 +115,8 @@ function random_canvi_y() {
     let y_noves = y.slice(); // copia l'array de les y en un nou array coordenades actuals
     let i = floor(random(1, N)); // escollim una regió aleatoriament
     
-    let trobat = false;
-    while (!trobat) {
-        let dy = random(-delta, delta); // calculem un canvi aleatori en y(i)
-        if (dy+y_noves[i] >= 0 && dy+y_noves[i] <= height) {
-            y_noves[i] += dy;
-            trobat = true;
-        }
-    }
+    let dy = random(-delta, delta); // calculem un canvi aleatori en y(i)
+    y_noves[i] += dy;
 
     let t_update = 0;
     for (let j = 0; j < N; j++) {
