@@ -71,6 +71,13 @@ let delta = 20;
  */
 let N = 10;
 
+/**
+ * Conjunt de Regions del canvas. La mida haurà de ser N+1. On la 0 no es té en compte per dibuixar però si per calcular
+ * la y(0) d'inici.
+ * @type {*[]}
+ */
+let regions = [];
+
 
 //TODO: fer servir array d'objectes
 let y = []; // Coordenades aleatòries y de la trajectòria
@@ -90,9 +97,15 @@ function setup() {
     var canvas = createCanvas(800, 400);
     canvas.parent("myCanvas");
 
-    apartat_a();
-    setup_random_y_trajectories();
     crea_N_slider();
+    //TODO: afegir botó set up
+    //TODO: afegir botó start
+    //TODO:  més??
+
+    //Settejar valors inicial de les diferents n(i)
+
+    apartat_a(); //S'haurà de borrar.
+    setup_random_y_trajectories();
 }
 
 
@@ -110,12 +123,32 @@ function draw() {
     calcular_trajectoria();
 }
 
+/* ********** MÈTODES CRIDATS PER ELEMENTS VISUALS ********** */
+
+/**
+ * Cridat per l'slider encarregat de settejar N.
+ * @param value
+ */
+function update_regions(value) {
+    N = value; // actualitzem valor N
+    //TODO: canviar variable regions
+    setup_random_y_trajectories(); // Actualitzem el valor de les trajectories random basades en la nova N
+    draw_regions(); // redibuixem les regions
+}
+
+
+/* ********** ELEMENTS VISUALS ********** */
+
+function crea_N_slider() {
+    let slider = createSlider(1, 20, N);
+    slider.parent("container-slider"); // posem el sliders en el contenidor HTML
+    slider.input(() => update_regions(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
+}
+
+
 /* ********** ALTRES ********** */
 
-
-
-
-
+//TODO: will be deprecated
 //Setegem paràmetres de l'experiment
 function setParameters(index1, index2) {
     n1 = index1; // índex refracció primer medi
@@ -124,13 +157,21 @@ function setParameters(index1, index2) {
     v2 = c / n2; // Velocitat propagació de la llum en el segon medi
 }
 
+//TODO: will be deprecated
 function apartat_a() {
     setParameters(1, 1.5);
 }
-  
+
+//TODO: will be deprecated
 function apartat_b() {
     setParameters(1.5, 1.33);
 }
+
+
+
+//--------------------------------------------------
+
+
 
 function color_linies(red, green, blue) {
     stroke(red, green, blue)
@@ -165,18 +206,9 @@ function setup_random_y_trajectories() {
 }
 
 
-function update_regions(value) {
-    N = value; // actualitzem valor N
-    setup_random_y_trajectories(); // Actualitzem el valor de les trajectories random basades en la nova N
-    draw_regions(); // redibuixem les regions
-}
 
 
-function crea_N_slider() {
-    let slider = createSlider(1, 20, N);
-    slider.parent("container-slider"); // posem el sliders en el contenidor HTML
-    slider.input(() => update_regions(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
-}
+
 
 //Dibuixem les N regions uniformes on calculem la coordenada x de cada regió en funció del seu índex
 function draw_regions() {
