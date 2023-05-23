@@ -1,11 +1,77 @@
-//Constants
-let N = 10; // Nombre de regions
+
+/* CLASSES */
+class Regio {
+    n;
+    y;
+    v; //TODO: segurament pot ser calculada
+
+
+    /* CONSTRUCTORS */
+
+    constructor(n, y, v) {
+        this._n = n;
+        this._y = y;
+        this._v = v;
+    }
+
+    /* GETTERS */
+
+    get n() {
+        return this._n;
+    }
+
+    get y() {
+        return this._y;
+    }
+
+    get v() {
+        return this._v;
+    }
+
+    //TODO: funció per obtenir coordenades de N donada les anteriors
+
+}
+
+/* CONSTANTS */
+
+/**
+ * Velocitat de la llum en el buit.
+ * @type {number}
+ */
+const c = 1;
+
+/**
+ * Amplada de cada Regió.
+ * @type {number}
+ */
+const ampladaRegio = 1;
+
+
+/* VARIABLES */
+
+/**
+ * Valor màxim del canvi aleatori en y(i).
+ * @type {number}
+ */
+let delta = 20;
+
+/**
+ * Nombre de regions.
+ * @type {number}
+ */
+let N = 10;
+
+
+//TODO: fer servir array d'objectes
+let y = []; // Coordenades aleatòries y de la trajectòria
+
+//TODO: això estarà a dintre dels objectes
 let n1, n2; // Índexs de refracció dels medis
 let v1, v2; // Velocitat propagació de la llum en el dos medis
-let delta = 20; // delta := valor màxim del canvi random en y(i)
-let c = 1; //Velocitat de la llum
 
-let y = []; // Coordenades aleatòries y de la trajectòria
+
+
+
 
 
 //Setegem paràmetres de l'experiment
@@ -108,12 +174,12 @@ function calcular_temps_propagacio_llum() {
 }
 
 
-//Fem un canvi random en les y en una regio i acualitzem el temps de propagació
+//Fem un canvi random en les y en una regió i actualitzem el temps de propagació
 /*Es considera una i a l’atzar (0<i<N) i es fa un canvi aleatori en el valor de y(i) entre -delta i +delta. */
 //Calculeu si aquest canvi fa disminuir el temps que triga la llum. 
 function random_canvi_y() {
     let y_noves = y.slice(); // copia l'array de les y en un nou array coordenades actuals
-    let i = floor(random(1, N)); // escollim una regió aleatoriament
+    let i = floor(random(1, N)); // escollim una regió aleatòriament
     
     let trobat = false;
     while (!trobat) {
@@ -148,6 +214,10 @@ function calcular_trajectoria() {
 }
 
 
+/**
+ * Codi executat una sola vegada a l'inici del programa.
+ * Mètode propi de p5.js.
+ */
 function setup() {
     var canvas = createCanvas(800, 400);
     canvas.parent("myCanvas");
@@ -158,6 +228,10 @@ function setup() {
 }
 
 
+/**
+ * Codi executat indefinidament fins que s'atura l'execució del programa,
+ * Mètode propi de p5.js
+ */
 function draw() {
     background(255);
     
