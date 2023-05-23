@@ -1,38 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ca">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- Imports necessaris per afegir els estils i bootstrap! (tot compilat perquè funcioni en local)-->
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script src="js/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <script src="js/bootstrap.min.js"></script>
+
+    <!-- p5.js -->
+    <script src="lib/p5.min.js"></script>
+
     <!-- Script que conté el principi de Fermat -->
-    <script src="p5.min.js"></script>
-    <script src="principi-fermat.js"></script>
+    <script src="src/principi-fermat.js"></script>
 
     <title>Pràctica de Simulació: Principi de Fermat</title>
-
 </head>
 <body>
-  <!--<script src="fermat.js"></script> -->
     <div class="container-fluid centrar">
-        <h1> DEMOSTRACIÓ DEL PRINCIPI DE FERMAT </h1>
-        <h2 class="afegir-marge"> El camí recorregut per la llum en propagar-se des d'un punt a un altre és el que fa que el temps de propagació de la llum sigui mínim. </h2>
+        <h1>DEMOSTRACIÓ DEL PRINCIPI DE FERMAT</h1>
+        <h2 class="afegir-marge">El camí recorregut per la llum en propagar-se des d'un punt a un altre és el que fa que el temps de propagació de la llum sigui mínim.</h2>
     </div>
     <div class="container-fluid mida-fila d-flex flex-column">
         <div class="row h-25">
-            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
-                <h3> Paràmetres </h3>
-                <p> N Regions: <div id="container-slider"></div> </p>
+            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantalla bootstrap divideix "el viewport en 12 parts/columnes"-->
+                <h3>Paràmetres</h3>
+                <p>N Regions:</p><div id="container-slider"></div>
             </div>
-            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
-                <h3> Valors </h3>
+            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantalla bootstrap divideix "el viewport en 12 parts/columnes"-->
+                <h3>Valors</h3>
                 <div id="yValues"></div>
             </div>
             <div class="col-lg-8 centrar pintat-bg vora-custom">
-                <h3> Demostració del principi</h3>
+                <h3>Demostració del principi</h3>
                 <div id="myCanvas"></div>
             </div>
         </div>
