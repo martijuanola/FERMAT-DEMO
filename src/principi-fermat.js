@@ -123,7 +123,6 @@ function setup() {
 
     crea_N_textbox();
     //crea_delta_slider();
-
     //Settejar valors inicial de les diferents n(i)
     for (let i = 0; i <= N; i++) {
         let n = 1;
@@ -133,6 +132,7 @@ function setup() {
         let region = new Regio(n, y_reg, v);
         regions.push(region);
     }
+
     update_regions();
     
     apartat_a(); //S'haurà de borrar.
@@ -156,7 +156,6 @@ function draw() {
         display_iteracions();
         display_temps_propagacio_calculat();
         display_trajectoria_calculada();
-        console.log(regions);
     }
 }
 
@@ -177,7 +176,17 @@ function update_regions() {
 
     N = next_N; // actualitzem valor N
 
+    regions = [] //fem que l'array de regions torni a tenir els valor correctes
+    for (let i = 0; i <= N; i++) {
+        let n = 1;
+        let y_reg = y[i];
+        let v = c / n;
+  
+        let region = new Regio(n, y_reg, v);
+        regions.push(region);
+    }
     crea_refraction_textboxes(); //crea els textboxes dels indexs
+    setup_random_y_trajectories(); //actualitzem els valor de y dels objectes Regió
 
     draw_regions(); // redibuixem les regions
 }
@@ -217,6 +226,7 @@ function setup_valors() {
     print_y_valors();
     crea_refraction_textboxes();
     reset_iteracions(); //reset iteracions
+    console.log(regions);
 }
 
 //TODO: ACABAR, hauria de resetejar valors a aleatoris
@@ -364,6 +374,7 @@ function display_trajectoria_calculada() {
 function setup_random_y_trajectories() {
     for (let i = 0; i <= N; i++) {
         y[i] = random(height); // fem servir com alçada la mida del canvas
+        regions[i]._y = y[i]; //update dels objectes (en teoria va)
     }
     print_y_valors();
 }
