@@ -1,12 +1,11 @@
 //Constants
-let N = 10; // Nombre de regions
+let N = 10; // Nombre de regions incial
 let n1, n2; // Índexs de refracció dels medis
 let v1, v2; // Velocitat propagació de la llum en el dos medis
-let delta = 20; // delta := valor màxim del canvi random en y(i)
+let delta = 20; // delta := valor màxim del canvi random en y(i) inicial
 let c = 1; //Velocitat de la llum
 
 let y = []; // Coordenades aleatòries y de la trajectòria
-
 
 //Setegem paràmetres de l'experiment
 function setParameters(index1, index2) {
@@ -16,13 +15,21 @@ function setParameters(index1, index2) {
     v2 = c / n2; // Velocitat propagació de la llum en el segon medi
 }
 
+//Valors genèrics
+let iteracions = 0;
+let temps_propagacio_total = 0; 
+let distancia_total_calculada = 0; 
+
+
 function apartat_a() {
     setParameters(1, 1.5);
 }
-  
+
+
 function apartat_b() {
     setParameters(1.5, 1.33);
 }
+
 
 function color_linies(red, green, blue) {
     stroke(red, green, blue)
@@ -44,7 +51,40 @@ function draw_canvas_vora() {
 
 function print_y_valors() {
     let yValuesDiv = document.getElementById("yValues");
-    yValuesDiv.innerHTML = "valors de y: " + y.join(", ");
+    yValuesDiv.innerHTML = ""; // eliminem els y valors anteriors
+    
+    let ul = document.createElement("ul");
+    
+    for (let i = 0; i <= N; i++) {
+      let li = document.createElement("li");
+      li.innerHTML = "y[" + i + "]: " + y[i].toFixed(7);
+      ul.appendChild(li);
+    }
+    
+    yValuesDiv.appendChild(ul);
+}
+
+
+function display_iteracions() {
+    let iterationsDiv = document.getElementById("iterations");
+    iterationsDiv.innerHTML = "Iteracions: " + iteracions;
+}
+
+function reset_iteracions() {
+    iteracions = 0;
+    display_iteracions();
+}
+
+
+function display_temps_propagacio_calculat() {
+    let tempsDiv = document.getElementById("temps-prop-calculat");
+    tempsDiv.innerHTML = "Temps de propagació calculat: " + temps_propagacio_total;
+}
+
+
+function display_trajectoria_calculada() {
+    let distanciaDiv = document.getElementById("distancia-calculada");
+    distanciaDiv.innerHTML = "Trajectòria calculada de la llum: " + distancia_total_calculada;
 }
 
 
@@ -61,14 +101,32 @@ function update_regions(value) {
     N = value; // actualitzem valor N
     setup_random_y_trajectories(); // Actualitzem el valor de les trajectories random basades en la nova N
     draw_regions(); // redibuixem les regions
+    reset_iteracions(); //resetem iteracions
 }
 
 
-function crea_N_slider() {
-    let slider = createSlider(1, 20, N);
-    slider.parent("container-slider"); // posem el sliders en el contenidor HTML
-    slider.input(() => update_regions(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
+function update_delta(value) {
+    delta = value; // actualitzem valor delta
+    setup_random_y_trajectories(); // Actualitzem el valor de les trajectories random basades en la nova N
+    calcular_trajectoria(); 
+    draw_regions(); // redibuixem les regions
+    reset_iteracions(); //resetem iteracions
 }
+
+
+function crea_N_textbox() {
+    let textbox = createInput(N.toString(), "number");
+    textbox.parent("container-slider"); // posem el textbox en el contenidor HTML
+    textbox.input(() => update_regions(int(textbox.value()))); // actualitzem el valor de regions quan el valor del textbox canvia
+}
+
+
+function crea_delta_slider() {
+    let slider = createSlider(5, 50, delta);
+    slider.parent("container-delta"); // posem el sliders en el contenidor HTML
+    slider.input(() => update_delta(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
+}
+
 
 //Dibuixem les N regions uniformes on calculem la coordenada x de cada regió en funció del seu índex
 function draw_regions() {
@@ -82,6 +140,7 @@ function draw_regions() {
         line(x, 0, x, height); //line: traça linia entre dos punts line(x1,y1,x2,y2)
     }
 }
+
 
 // Dibuixem la trajectòria de la llum
 function trajectoria_llum() {
@@ -108,9 +167,18 @@ function calcular_temps_propagacio_llum() {
 }
 
 
+// Funcio que calcula la distància total de propagació de la llum
+function calcular_distancia_calculada() {
+    let distancia = 0;
+    for (let i = 0; i < N; i++) {
+        let dx = dist(i, y[i], i + 1, y[i + 1]);
+        distancia += dx;
+    }
+    return distancia;
+}
+
+
 //Fem un canvi random en les y en una regio i acualitzem el temps de propagació
-/*Es considera una i a l’atzar (0<i<N) i es fa un canvi aleatori en el valor de y(i) entre -delta i +delta. */
-//Calculeu si aquest canvi fa disminuir el temps que triga la llum. 
 function random_canvi_y() {
     let y_noves = y.slice(); // copia l'array de les y en un nou array coordenades actuals
     let i = floor(random(1, N)); // escollim una regió aleatoriament
@@ -137,13 +205,15 @@ function random_canvi_y() {
 //Calculeu si aquest canvi fa disminuir el temps que triga la llum. 
 //En cas afirmatiu, accepteu el canvi i continueu el procés.*/
 function calcular_trajectoria() { 
+    iteracions++;
     let t_prop = calcular_temps_propagacio_llum();
-    let t_prop_nou = random_canvi_y()[0];
-    let y_noves = random_canvi_y()[1];
+    let [t_prop_nou, y_noves] = random_canvi_y();
 
     //comprobem si el nou canvi disminueix el temps de propagació
     if (t_prop_nou < t_prop) {
         y = y_noves.slice(); // acceptem el canvi
+        temps_propagacio_total = t_prop_nou;
+        distancia_total_calculada = calcular_distancia_calculada();
     }
 }
 
@@ -154,7 +224,8 @@ function setup() {
 
     apartat_a();
     setup_random_y_trajectories();
-    crea_N_slider();
+    crea_N_textbox();
+    crea_delta_slider();
 }
 
 
@@ -164,6 +235,9 @@ function draw() {
     draw_canvas_vora();
     draw_regions();
     trajectoria_llum();
-
+    print_y_valors();
     calcular_trajectoria();
+    display_iteracions();
+    display_temps_propagacio_calculat();
+    display_trajectoria_calculada();
 }
