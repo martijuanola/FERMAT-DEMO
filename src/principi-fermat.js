@@ -133,7 +133,7 @@ function setup() {
         let region = new Regio(n, y_reg, v);
         regions.push(region);
     }
-    crea_refraction_textboxes(); //per defecte ho posa tot a 
+    update_regions();
     
     apartat_a(); //S'haurà de borrar.
     setup_random_y_trajectories();
@@ -185,30 +185,24 @@ function update_regions() {
 function crea_refraction_textboxes() {
     let refractionTextboxDiv = document.getElementById("refraction-textboxes");
     refractionTextboxDiv.innerHTML = "";
-  
+
     for (let i = 1; i <= N; i++) {
-      let label = document.createElement("label");
-      label.setAttribute("for", "refraction-" + i);
-      label.innerText = "n" + i + ": ";
-  
-      let input = document.createElement("input");
-      input.setAttribute("type", "number");
-      input.setAttribute("id", "refraction-" + i);
-      input.setAttribute("min", "1");
-      input.setAttribute("step", "0.1");
-      input.value = regions[i].n; //agafa el valor incial que hem setejat
-  
-      input.style.width = "50px";
-      input.style.height = "20px";
-      input.style.fontSize = "12px";
-  
-      //HAURIA D'ACTUALITZAR EL VALOR DE N DE L'OBJECTE
-      input.addEventListener("input", function () {
-        regions[i].n = parseFloat(input.value);
-      });
-  
-      refractionTextboxDiv.appendChild(label);
-      refractionTextboxDiv.appendChild(input);
+        let label = document.createElement("label");
+        label.setAttribute("for", "refraction-" + i);
+        label.innerText = "n" + i + ": ";
+
+        let input = document.createElement("input");
+        input.setAttribute("type", "number");
+        input.setAttribute("id", "refraction-" + i);
+        input.setAttribute("min", "1");
+        input.setAttribute("step", "0.1");
+
+        input.style.width = "50px";
+        input.style.height = "20px";
+        input.style.fontSize = "12px";
+
+        refractionTextboxDiv.appendChild(label);
+        refractionTextboxDiv.appendChild(input);
     }
 }
   
@@ -221,7 +215,7 @@ function setup_valors() {
     draw_regions();
     draw_trajectoria_llum();
     print_y_valors();
-    //crea_refraction_textboxes();
+    crea_refraction_textboxes();
     reset_iteracions(); //reset iteracions
 }
 
@@ -326,15 +320,6 @@ function apartat_b() {
 
 
 //--------------------------------------------------
-
-
-
-
-
-
-
-
-
 
 function print_y_valors() {
     let yValuesDiv = document.getElementById("yValues");
