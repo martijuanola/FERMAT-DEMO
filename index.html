@@ -26,6 +26,13 @@
     <div class="container-fluid centrar mida-fila pintat-bg vora-custom">
         <h3> USER-GUIDE </h3>
         <p class="afegir-marge"> Aqui posem la guia per saber com fer funcionar el simulador </p>
+        <p class="afegir-marge"> (provisional) Funcionament dels botons: </p>
+        <ol>
+            <li><b>[SET N]</b> - Para l'execució si n'hi ha alguna en curs. Setejar un nou valor per N(l'últim donat per la caixeta de text). En un futur hauria d'ensenyar les caixetes per poder seleccionar les n de cada regió. De moment encara no es fa. </li>
+            <li><b>[SETUP/RESET]</b> - Introdueix valors per N(encara no es fa però s'hauria d'afegir) i tragectories aleatories. Encara no s'inicien les iteracions. També en un futur s'haurà d'ensenyar la trajectoria correcte.</li>
+            <li><b>[START]</b> - Comencen les iteracions.</li>
+            <li><b>[PAUSE]</b> - Es paren les iteracions però no s'esborra el canvas ni es canvien valors.</li>
+        </ol>
     </div>
     <div class="container-fluid mida-fila d-flex flex-column pintat-bg">
         <div class="row h-25">
@@ -35,12 +42,27 @@
                     <div class="col">
                         <label>Nombre Regions:</label>
                         <div id="N-textbox"></div>
+                        <div class="col">
+                            <button type="button" class="btn btn-primary active" onclick="update_regions()">SET N</button>
+                        </div>
                     </div>
-                    <div class="col">
+                    <!--TODO: afegir això després -->
+                    <!--<div class="col">
                         <label>Delta:</label>
                         <div id="container-delta"></div>
+                    </div>-->
+                    <div class="col">
+                        <button type="button" class="btn btn-primary active" onclick="setup_valors()">SETUP/RESET</button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary active" onclick="start_iterations()">START!</button>
+                        <button type="button" class="btn btn-primary active" onclick="pause_iterations()">PAUSE</button>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
+                <h3> Valors </h3>
+                <div id="yValues"></div>
                 <div class="row mt-3">
                     <div class="col">
                         <h3>Valors genèrics</h3>
@@ -53,10 +75,6 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
-                <h3> Valors </h3>
-                <div id="yValues"></div>
             </div>
             <div class="col-md-8 centrar pintat-bg vora-custom">
                 <h3> Demostració del principi</h3>

@@ -60,6 +60,11 @@ const ampladaRegio = 1;
 /* ********** VARIABLES ********** */
 
 /**
+ * Indica si s'ha de pintar o no.
+ * @type {boolean}
+ */
+let activat = false;
+/**
  * Valor màxim del canvi aleatori en y(i).
  * @type {number}
  */
@@ -72,6 +77,12 @@ let delta = 20;
 let N = 10;
 
 /**
+ * N modificada per la caixeta de text. Es fa servir aquesta quan es selecciona amb el botó.
+ * @type {number}
+ */
+let next_N = 10;
+
+/**
  * Nombre d'iteracions
  * @type {number}
  */
@@ -82,6 +93,7 @@ let temps_propagacio_total = 0;
 
 //TODO: pot ser una funció
 let distancia_total_calculada = 0;
+
 
 
 /**
@@ -106,19 +118,17 @@ let v1, v2; // Velocitat propagació de la llum en el dos medis
  * Mètode propi de p5.js.
  */
 function setup() {
-    var canvas = createCanvas(800, 400);
+    let canvas = createCanvas(800, 400);
     canvas.parent("myCanvas");
 
     crea_N_textbox();
-    crea_delta_slider();
-    //TODO: afegir botó set up
-    //TODO: afegir botó start
-    //TODO:  més??
+    //crea_delta_slider();
 
     //Settejar valors inicial de les diferents n(i)
 
     apartat_a(); //S'haurà de borrar.
     setup_random_y_trajectories();
+    draw_canvas_vora();
 }
 
 /**
@@ -126,40 +136,71 @@ function setup() {
  * Mètode propi de p5.js
  */
 function draw() {
-    background(255);
+    if (activat) { //Només fa les iteracions si està activat
+        background(255);
 
-    draw_canvas_vora();
-    draw_regions();
-    trajectoria_llum();
-    print_y_valors();
-    calcular_trajectoria();
-    display_iteracions();
-    display_temps_propagacio_calculat();
-    display_trajectoria_calculada();
+        draw_canvas_vora();
+        draw_regions();
+        draw_trajectoria_llum();
+        print_y_valors();
+        calcular_trajectoria();
+        display_iteracions();
+        display_temps_propagacio_calculat();
+        display_trajectoria_calculada();
+    }
 }
 
 /* ********** MÈTODES CRIDATS PER ELEMENTS VISUALS ********** */
 
+function set_next_N(value) {
+    next_N = value; // actualitzem valor N
+}
+
 /**
- * Cridat per l'slider encarregat de settejar N.
+ * Cridat pel boto de SET N.
  * @param value
  */
-function update_regions(value) {
-    N = value; // actualitzem valor N
+function update_regions() {
+    pause_iterations() // para execució
+    reset_iteracions(); //reset iteracions
+    draw_canvas_vora(); // fons blanc
+
+    N = next_N; // actualitzem valor N
     //TODO: canviar variable regions
-    setup_random_y_trajectories(); // Actualitzem el valor de les trajectories random basades en la nova N
+
     draw_regions(); // redibuixem les regions
+}
+
+//TODO: ACABAR, hauria de resetejar valors a aleatoris
+function setup_valors() {
+    console.log("SETUP");
+    setup_random_y_trajectories();
+    draw_canvas_vora();
+    draw_regions();
+    draw_trajectoria_llum();
+    print_y_valors();
     reset_iteracions(); //reset iteracions
 }
 
+//TODO: ACABAR, hauria de resetejar valors a aleatoris
+function start_iterations() {
+    activat = true;
+    console.log("START ITERATIONS (activat=" + activat + ")");
+}
 
-/* ********** ELEMENTS VISUALS ********** */
+function pause_iterations() {
+    activat = false;
+    console.log("PAUSE ITERATIONS (activat=" + activat + ")");
+}
+
+
+/* ********** ELEMENTS INTERACCIÓ VISUALS ********** */
 
 //TODO: solucionar problema quan s'envia un 0
 function crea_N_textbox() {
     let textbox = createInput(N.toString(), "number");
     textbox.parent("N-textbox"); // posem el textbox en el contenidor HTML
-    textbox.input(() => update_regions(int(textbox.value()))); // actualitzem el valor de regions quan el valor del textbox canvia
+    textbox.input(() => set_next_N(int(textbox.value()))); // actualitzem el valor de regions quan el valor del textbox canvia
 }
 
 function crea_delta_slider() {
@@ -169,8 +210,51 @@ function crea_delta_slider() {
 }
 
 
+/* ********** DIBUIXAR EL CANVAS ********** */
+
+/**
+ * Dibuixa el fons del canvas.
+ */
+function draw_canvas_vora() {
+    stroke(0, 0, 0);
+    strokeWeight(3);
+    rect(0, 0, width, height);
+}
+
+//TODO: s'haurà de canviar per evitar processar la primera regió
+/**
+ * Dibuixem les N regions uniformes on calculem la coordenada x de cada regió en funció del seu índex
+ */
+function draw_regions() {
+    stroke(0,0,0);
+    strokeWeight(2);
+
+    for (let i = 1; i < N; i++) {
+        //map(valor a convertir, limit inf rang actual, limit sup rang actual,
+        //limit inf rang desitjat, limit sup rang desitjat)
+        let x = map(i, 0, N, 0, width); //calculem on hem de partir les regions en base a la mida del canvas
+        line(x, 0, x, height); //line: traça linia entre dos punts line(x1,y1,x2,y2)
+    }
+}
+
+//TODO: s'haurà de canviar per evitar processar la primera regió
+/**
+ * Dibuixem la trajectòria de la llum
+ */
+function draw_trajectoria_llum() {
+    stroke(255,125,0);
+    strokeWeight(3);
+
+    for (let i = 0; i < N; i++) {
+        let x1 = map(i, 0, N, 0, width);
+        let x2 = map(i + 1, 0, N, 0, width);
+        line(x1, y[i], x2, y[i + 1]);
+    }
+}
+
 
 /* ********** ALTRES ********** */
+
 
 //TODO: will be deprecated
 //Setegem paràmetres de l'experiment
@@ -196,22 +280,11 @@ function apartat_b() {
 
 
 
-function color_linies(red, green, blue) {
-    stroke(red, green, blue)
-}
 
 
-function amplada_linies(amplada_pixels) {
-    strokeWeight(amplada_pixels);
-}
 
 
-function draw_canvas_vora() { 
-    amplada_linies(3);
-    color_linies(0, 0, 0);
 
-    rect(0, 0, width, height);
-}
 
 
 function print_y_valors() {
@@ -268,33 +341,6 @@ function update_delta(value) {
     calcular_trajectoria();
     draw_regions(); // redibuixem les regions
     reset_iteracions(); //resetem iteracions
-}
-
-
-//Dibuixem les N regions uniformes on calculem la coordenada x de cada regió en funció del seu índex
-function draw_regions() {
-    color_linies(0,0,0);
-    amplada_linies(2);
-
-    for (let i = 1; i < N; i++) {
-        //map(valor a convertir, limit inf rang actual, limit sup rang actual, 
-        //limit inf rang desitjat, limit sup rang desitjat)
-        let x = map(i, 0, N, 0, width); //calculem on hem de partir les regions en base a la mida del canvas
-        line(x, 0, x, height); //line: traça linia entre dos punts line(x1,y1,x2,y2)
-    }
-}
-
-
-// Dibuixem la trajectòria de la llum
-function trajectoria_llum() {
-    color_linies(255,125,0);
-    amplada_linies(3);
-
-    for (let i = 0; i < N; i++) {
-        let x1 = map(i, 0, N, 0, width);
-        let x2 = map(i + 1, 0, N, 0, width);
-        line(x1, y[i], x2, y[i + 1]);
-    }
 }
 
 
