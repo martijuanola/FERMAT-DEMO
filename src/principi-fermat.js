@@ -177,6 +177,7 @@ function update_regions() {
     N = next_N; // actualitzem valor N
 
     regions = [] //fem que l'array de regions torni a tenir els valor correctes
+    //MIRAR-HO BÉ!
     for (let i = 0; i <= N; i++) {
         let n = 1;
         let y_reg = y[i];
