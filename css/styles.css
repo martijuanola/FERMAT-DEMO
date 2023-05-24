@@ -13,7 +13,7 @@ h2 {
 }
 
 .pintat-bg {
-    background-color: rgb(225, 222, 209)
+    background-color: rgb(231, 222, 209)
 }
 
 .mida-fila {
@@ -26,9 +26,8 @@ h2 {
 
 .body {
     height: 100%;
-    background-color: rgb(225, 222, 209);
 }
 
 .vora-custom {
-    border: 1px solid rgb(214, 208, 176);
+    border: 2px solid rgb(214, 208, 176);
 }
