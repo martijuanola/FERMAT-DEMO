@@ -5,15 +5,15 @@ class Regio {
     /**
      * Índex de refracció uniforme en la regió.
      */
-    n;
+    _n;
     /**
      * Component y del punt d'intersecció del raig en la superfície dreta de la regió.
      */
-    y;
+    _y;
     /**
      * Velocitat de propagació de la llum uniforme en la regió.
      */
-    v; //TODO: segurament pot ser calculada
+    _v; //TODO: segurament pot ser calculada
 
 
     /* CONSTRUCTORS */
@@ -125,7 +125,16 @@ function setup() {
     //crea_delta_slider();
 
     //Settejar valors inicial de les diferents n(i)
-
+    for (let i = 0; i <= N; i++) {
+        let n = 1;
+        let y_reg = y[i]; 
+        let v = c / n;
+    
+        let region = new Regio(n, y_reg, v);
+        regions.push(region);
+    }
+    crea_refraction_textboxes(); //per defecte ho posa tot a 
+    
     apartat_a(); //S'haurà de borrar.
     setup_random_y_trajectories();
     draw_canvas_vora();
@@ -147,6 +156,7 @@ function draw() {
         display_iteracions();
         display_temps_propagacio_calculat();
         display_trajectoria_calculada();
+        console.log(regions);
     }
 }
 
@@ -166,10 +176,42 @@ function update_regions() {
     draw_canvas_vora(); // fons blanc
 
     N = next_N; // actualitzem valor N
-    //TODO: canviar variable regions
+
+    crea_refraction_textboxes(); //crea els textboxes dels indexs
 
     draw_regions(); // redibuixem les regions
 }
+
+function crea_refraction_textboxes() {
+    let refractionTextboxDiv = document.getElementById("refraction-textboxes");
+    refractionTextboxDiv.innerHTML = "";
+  
+    for (let i = 1; i <= N; i++) {
+      let label = document.createElement("label");
+      label.setAttribute("for", "refraction-" + i);
+      label.innerText = "n" + i + ": ";
+  
+      let input = document.createElement("input");
+      input.setAttribute("type", "number");
+      input.setAttribute("id", "refraction-" + i);
+      input.setAttribute("min", "1");
+      input.setAttribute("step", "0.1");
+      input.value = regions[i].n; //agafa el valor incial que hem setejat
+  
+      input.style.width = "50px";
+      input.style.height = "20px";
+      input.style.fontSize = "12px";
+  
+      //HAURIA D'ACTUALITZAR EL VALOR DE N DE L'OBJECTE
+      input.addEventListener("input", function () {
+        regions[i].n = parseFloat(input.value);
+      });
+  
+      refractionTextboxDiv.appendChild(label);
+      refractionTextboxDiv.appendChild(input);
+    }
+}
+  
 
 //TODO: ACABAR, hauria de resetejar valors a aleatoris
 function setup_valors() {
@@ -179,6 +221,7 @@ function setup_valors() {
     draw_regions();
     draw_trajectoria_llum();
     print_y_valors();
+    //crea_refraction_textboxes();
     reset_iteracions(); //reset iteracions
 }
 
@@ -186,11 +229,13 @@ function setup_valors() {
 function start_iterations() {
     activat = true;
     console.log("START ITERATIONS (activat=" + activat + ")");
+    console.log(regions);
 }
 
 function pause_iterations() {
     activat = false;
     console.log("PAUSE ITERATIONS (activat=" + activat + ")");
+    console.log(regions);
 }
 
 
@@ -201,6 +246,10 @@ function crea_N_textbox() {
     let textbox = createInput(N.toString(), "number");
     textbox.parent("N-textbox"); // posem el textbox en el contenidor HTML
     textbox.input(() => set_next_N(int(textbox.value()))); // actualitzem el valor de regions quan el valor del textbox canvia
+
+    textbox.style("width", "50px");
+    textbox.style("height", "20px");
+    textbox.style("font-size", "12px");
 }
 
 function crea_delta_slider() {
