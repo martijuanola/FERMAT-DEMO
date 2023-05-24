@@ -72,12 +72,24 @@ let delta = 20;
 let N = 10;
 
 /**
+ * Nombre d'iteracions
+ * @type {number}
+ */
+let iteracions = 0;
+
+//TODO: pot ser una funció
+let temps_propagacio_total = 0;
+
+//TODO: pot ser una funció
+let distancia_total_calculada = 0;
+
+
+/**
  * Conjunt de Regions del canvas. La mida haurà de ser N+1. On la 0 no es té en compte per dibuixar però si per calcular
  * la y(0) d'inici.
  * @type {*[]}
  */
 let regions = [];
-
 
 //TODO: fer servir array d'objectes
 let y = []; // Coordenades aleatòries y de la trajectòria
@@ -137,16 +149,25 @@ function update_regions(value) {
     //TODO: canviar variable regions
     setup_random_y_trajectories(); // Actualitzem el valor de les trajectories random basades en la nova N
     draw_regions(); // redibuixem les regions
+    reset_iteracions(); //reset iteracions
 }
 
 
 /* ********** ELEMENTS VISUALS ********** */
 
-function crea_N_slider() {
-    let slider = createSlider(1, 20, N);
-    slider.parent("container-slider"); // posem el sliders en el contenidor HTML
-    slider.input(() => update_regions(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
+//TODO: solucionar problema quan s'envia un 0
+function crea_N_textbox() {
+    let textbox = createInput(N.toString(), "number");
+    textbox.parent("N-textbox"); // posem el textbox en el contenidor HTML
+    textbox.input(() => update_regions(int(textbox.value()))); // actualitzem el valor de regions quan el valor del textbox canvia
 }
+
+function crea_delta_slider() {
+    let slider = createSlider(5, 50, delta);
+    slider.parent("container-delta"); // posem el sliders en el contenidor HTML
+    slider.input(() => update_delta(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
+}
+
 
 
 /* ********** ALTRES ********** */
@@ -161,23 +182,14 @@ function setParameters(index1, index2) {
 }
 
 //TODO: will be deprecated
-//Valors genèrics
-let iteracions = 0;
-let temps_propagacio_total = 0;
-let distancia_total_calculada = 0;
-
-
 function apartat_a() {
     setParameters(1, 1.5);
 }
 
 //TODO: will be deprecated
-
-
 function apartat_b() {
     setParameters(1.5, 1.33);
 }
-
 
 
 //--------------------------------------------------
@@ -250,34 +262,12 @@ function setup_random_y_trajectories() {
 }
 
 
-function update_regions(value) {
-    N = value; // actualitzem valor N
-    setup_random_y_trajectories(); // Actualitzem el valor de les trajectories random basades en la nova N
-    draw_regions(); // redibuixem les regions
-    reset_iteracions(); //resetem iteracions
-}
-
-
 function update_delta(value) {
     delta = value; // actualitzem valor delta
     setup_random_y_trajectories(); // Actualitzem el valor de les trajectories random basades en la nova N
     calcular_trajectoria();
     draw_regions(); // redibuixem les regions
     reset_iteracions(); //resetem iteracions
-}
-
-
-function crea_N_textbox() {
-    let textbox = createInput(N.toString(), "number");
-    textbox.parent("container-slider"); // posem el textbox en el contenidor HTML
-    textbox.input(() => update_regions(int(textbox.value()))); // actualitzem el valor de regions quan el valor del textbox canvia
-}
-
-
-function crea_delta_slider() {
-    let slider = createSlider(5, 50, delta);
-    slider.parent("container-delta"); // posem el sliders en el contenidor HTML
-    slider.input(() => update_delta(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
 }
 
 
