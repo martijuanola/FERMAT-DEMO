@@ -1,4 +1,3 @@
-
 /* ********** CLASSES ********** */
 
 class Regio {
@@ -136,7 +135,7 @@ function setup() {
     update_regions();
     
     apartat_a(); //S'haurà de borrar.
-    setup_random_y_trajectories();
+    //setup_random_y_trajectories();
     draw_canvas_vora();
 }
 
@@ -151,7 +150,9 @@ function draw() {
         draw_canvas_vora();
         draw_regions();
         draw_trajectoria_llum();
+        draw_trajectoria_snell();
         print_y_valors();
+        taula();    
         calcular_trajectoria();
         display_iteracions();
         display_temps_propagacio_calculat();
@@ -172,7 +173,7 @@ function set_next_N(value) {
 function update_regions() {
     pause_iterations() // para execució
     reset_iteracions(); //reset iteracions
-    draw_canvas_vora(); // fons blanc
+    draw_canvas_vora(); // fons blanc   
 
     N = next_N; // actualitzem valor N
 
@@ -187,7 +188,7 @@ function update_regions() {
         regions.push(region);
     }
     crea_refraction_textboxes(); //crea els textboxes dels indexs
-    setup_random_y_trajectories(); //actualitzem els valor de y dels objectes Regió
+    //setup_random_y_trajectories(); //actualitzem els valor de y dels objectes Regió
 
     draw_regions(); // redibuixem les regions
 }
@@ -224,7 +225,9 @@ function setup_valors() {
     draw_canvas_vora();
     draw_regions();
     draw_trajectoria_llum();
+    draw_trajectoria_snell()
     print_y_valors();
+    taula();
     crea_refraction_textboxes();
     reset_iteracions(); //reset iteracions
     console.log(regions);
@@ -303,6 +306,33 @@ function draw_trajectoria_llum() {
         let x1 = map(i, 0, N, 0, width);
         let x2 = map(i + 1, 0, N, 0, width);
         line(x1, y[i], x2, y[i + 1]);
+    }
+}
+
+/**
+ * Dibuixa la trajectòria de Snell de la llum
+ */
+function draw_trajectoria_snell() {
+    stroke(0, 255, 0);
+    strokeWeight(3);
+
+    for (let i = 0; i < N; i++) {
+        let x1 = map(i, 0, N, 0, width);
+        let x2 = map(i + 1, 0, N, 0, width);
+
+        let n1 = regions[i]._n; // index refraccio regio actual
+        let n2 = regions[i + 1]._n; // index refraccio regio seguent
+
+        let y1 = regions[i]._y; // coordenada y regio actual
+        let y2 = regions[i + 1]._y; // coordenada y regio seguent
+
+        let angle1 = atan2(y2 - y1, x2 - x1); // angle incidencia
+        let angle2 = asin((n1 / n2) * sin(angle1)); // angle refraccio
+
+        let y1_snell = y1 + ampladaRegio * tan(angle1); // coordeanda y extrem regio
+        let y2_snell = y2 - ampladaRegio * tan(angle2); // coordeanda y extrem seguent regio
+
+        line(x1, y1_snell, x2, y2_snell);
     }
 }
 
