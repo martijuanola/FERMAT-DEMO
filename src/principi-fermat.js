@@ -513,6 +513,7 @@ function update_delta(value) {
 }
 
 
+//TODO: GENERALITZAR perquè hi ha codi duplica a 3 llocs que fa això
 // Cal minimitzar aquesta funció que calcula el temps de propagació de la llum
 function calcular_temps_propagacio_llum() {
     let t = 0;
@@ -528,7 +529,7 @@ function calcular_temps_propagacio_llum() {
 function calcular_distancia_calculada() {
     let distancia = 0;
     for (let i = 0; i < N; i++) {
-        let dx = dist(i, regions[i].y, i + 1, regions[i + 1].y);
+        let dx = dist(i, regions[i].y, i + ampladaRegio, regions[i + 1].y);
         distancia += dx;
     }
     return distancia;
