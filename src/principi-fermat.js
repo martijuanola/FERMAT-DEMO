@@ -10,7 +10,9 @@ class Regio {
      * Component y del punt d'intersecció del raig en la superfície dreta de la regió.
      */
     _y;
-
+    /**
+     * Objecte de JS que guarda la informació de la textbox
+     */
     input;
 
     /* CONSTRUCTORS */
@@ -154,10 +156,9 @@ function draw() {
         draw_regions();
         draw_trajectoria_llum();
         draw_trajectoria_snell();
-        //taula();
         calcular_trajectoria();
-
         display_iteracions();
+        taula();
         display_temps_propagacio_calculat();
         display_trajectoria_calculada();
 
@@ -230,6 +231,7 @@ function setup_valors() {
     final_y = draw_trajectoria_snell();
     setup_random_y_trajectories(final_y);
     draw_trajectoria_llum();
+    taula(); //dibuixem la taula
 
     reset_iteracions(); //reset iteracions
 }
@@ -262,11 +264,109 @@ function crea_N_textbox() {
 }
 
 function crea_delta_slider() {
-    let slider = createSlider(5, 50, delta);
+    let slider = createSlider(2, 100, delta);
     slider.parent("container-delta"); // posem el sliders en el contenidor HTML
     slider.input(() => update_delta(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
 }
 
+function taula() {
+    let tableDiv = document.getElementById("region-info");
+    tableDiv.innerHTML = ""; // elimina la taula anterior
+  
+    let tableContainer = document.createElement("div");
+    tableContainer.classList.add("table-container"); //ho posem amb un contenidor
+  
+    let tableTitle = document.createElement("h3");
+    tableTitle.textContent = "Taula de valors"; //titol de la taula
+    tableContainer.appendChild(tableTitle);
+  
+    // nombre de taules necesaries
+    let numTables = Math.ceil(N / 10);
+  
+    // it cada taula
+    for (let t = 0; t < numTables; t++) {
+      // fem taula
+      let table = document.createElement("table");
+      table.classList.add("data-table");
+  
+      // fem header de cada taula
+      let thead = document.createElement("thead");
+      let headerRow = document.createElement("tr");
+  
+      let th = document.createElement("th");
+      th.textContent = "Regió";
+      th.style.border = "1px solid black";
+      th.style.padding = "8px";
+      th.style.minWidth = "100px"; // amplada minima per cada columna
+      headerRow.appendChild(th);
+  
+      // calculem primera i ultima regio de la taula
+      let startRegion = t * 10 + 1;
+      let endRegion = Math.min(startRegion + 9, N);
+  
+      // it cadad regio i fem columna
+      for (let i = startRegion; i <= endRegion; i++) {
+        let region = regions[i];
+  
+        let th = document.createElement("th");
+        th.textContent = i;
+        th.style.border = "1px solid black";
+        th.style.padding = "8px";
+        th.style.minWidth = "100px";
+        headerRow.appendChild(th);
+      }
+  
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+  
+      // contingut de la taula
+      let tbody = document.createElement("tbody");
+  
+      // iterem per la informació(atributs) que te cada regió i fem una fila per cada atribut
+      let row1 = document.createElement("tr");
+      let row2 = document.createElement("tr");
+  
+      let td1 = document.createElement("td");
+      td1.textContent = "n";
+      td1.style.border = "1px solid black";
+      td1.style.padding = "8px";
+      row1.appendChild(td1);
+  
+      let td2 = document.createElement("td");
+      td2.textContent = "y";
+      td2.style.border = "1px solid black";
+      td2.style.padding = "8px";
+      row2.appendChild(td2);
+  
+      // iterem cada regio i fem celes per cada columna
+      for (let i = startRegion; i <= endRegion; i++) {
+        let region = regions[i];
+  
+        let td1 = document.createElement("td");
+        td1.textContent = region.n;
+        td1.style.border = "1px solid black";
+        td1.style.padding = "8px";
+        row1.appendChild(td1);
+  
+        let td2 = document.createElement("td");
+        td2.textContent = region.y;
+        td2.style.border = "1px solid black";
+        td2.style.padding = "8px";
+        row2.appendChild(td2);
+      }
+  
+      tbody.appendChild(row1);
+      tbody.appendChild(row2);
+  
+      table.appendChild(tbody);
+  
+      tableContainer.appendChild(table);
+    }
+  
+    tableDiv.appendChild(tableContainer);
+}
+  
+  
 
 /* ********** DIBUIXAR EL CANVAS ********** */
 
@@ -400,7 +500,6 @@ function setup_random_y_trajectories(final_y) {
 
 function update_delta(value) {
     delta = value; // actualitzem valor delta
-    //setup_random_y_trajectories(); // Actualitzem el valor de les trajectories random basades en la nova N
     calcular_trajectoria();
     draw_regions(); // redibuixem les regions
     reset_iteracions(); //resetem iteracions

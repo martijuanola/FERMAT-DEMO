@@ -31,3 +31,28 @@ h2 {
 .vora-custom {
     border: 2px solid rgb(214, 208, 176);
 }
+
+#region-info > div {
+    width: 100%;
+    overflow-x: none;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .data-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+  
+  .data-table th,
+  .data-table td {
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
