@@ -285,84 +285,83 @@ function taula() {
   
     // it cada taula
     for (let t = 0; t < numTables; t++) {
-      // fem taula
-      let table = document.createElement("table");
-      table.classList.add("data-table");
-  
-      // fem header de cada taula
-      let thead = document.createElement("thead");
-      let headerRow = document.createElement("tr");
-  
-      let th = document.createElement("th");
-      th.textContent = "Regió";
-      th.style.border = "1px solid black";
-      th.style.padding = "8px";
-      th.style.minWidth = "100px"; // amplada minima per cada columna
-      headerRow.appendChild(th);
-  
-      // calculem primera i ultima regio de la taula
-      let startRegion = t * 10 + 1;
-      let endRegion = Math.min(startRegion + 9, N);
-  
-      // it cadad regio i fem columna
-      for (let i = startRegion; i <= endRegion; i++) {
-        let region = regions[i];
-  
+        // fem taula
+        let table = document.createElement("table");
+        table.classList.add("data-table");
+    
+        // fem header de cada taula
+        let thead = document.createElement("thead");
+        let headerRow = document.createElement("tr");
+    
         let th = document.createElement("th");
-        th.textContent = i;
+        th.textContent = "Regió";
         th.style.border = "1px solid black";
         th.style.padding = "8px";
-        th.style.minWidth = "100px";
+        th.style.minWidth = "100px"; // amplada minima per cada columna
         headerRow.appendChild(th);
-      }
+    
+        // calculem primera i ultima regio de la taula
+        let startRegion = t * 10 + 1;
+        let endRegion = Math.min(startRegion + 9, N);
+    
+        // it cadad regio i fem columna
+        for (let i = startRegion; i <= endRegion; i++) {
+            let region = regions[i];
+    
+            let th = document.createElement("th");
+            th.textContent = i;
+            th.style.border = "1px solid black";
+            th.style.padding = "8px";
+            th.style.minWidth = "100px";
+            headerRow.appendChild(th);
+        }
   
-      thead.appendChild(headerRow);
-      table.appendChild(thead);
-  
-      // contingut de la taula
-      let tbody = document.createElement("tbody");
-  
-      // iterem per la informació(atributs) que te cada regió i fem una fila per cada atribut
-      let row1 = document.createElement("tr");
-      let row2 = document.createElement("tr");
-  
-      let td1 = document.createElement("td");
-      td1.textContent = "n";
-      td1.style.border = "1px solid black";
-      td1.style.padding = "8px";
-      row1.appendChild(td1);
-  
-      let td2 = document.createElement("td");
-      td2.textContent = "y";
-      td2.style.border = "1px solid black";
-      td2.style.padding = "8px";
-      row2.appendChild(td2);
-  
-      // iterem cada regio i fem celes per cada columna
-      for (let i = startRegion; i <= endRegion; i++) {
-        let region = regions[i];
-  
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+    
+        // contingut de la taula
+        let tbody = document.createElement("tbody");
+    
+        // iterem per la informació(atributs) que te cada regió i fem una fila per cada atribut
+        let row1 = document.createElement("tr");
+        let row2 = document.createElement("tr");
+    
         let td1 = document.createElement("td");
-        td1.textContent = region.n;
+        td1.textContent = "n";
         td1.style.border = "1px solid black";
         td1.style.padding = "8px";
         row1.appendChild(td1);
-  
+    
         let td2 = document.createElement("td");
-        td2.textContent = region.y;
+        td2.textContent = "y";
         td2.style.border = "1px solid black";
         td2.style.padding = "8px";
         row2.appendChild(td2);
-      }
   
-      tbody.appendChild(row1);
-      tbody.appendChild(row2);
-  
-      table.appendChild(tbody);
-  
-      tableContainer.appendChild(table);
+        // iterem cada regio i fem celes per cada columna
+        for (let i = startRegion; i <= endRegion; i++) {
+            let region = regions[i];
+    
+            let td1 = document.createElement("td");
+            td1.textContent = region.n;
+            td1.style.border = "1px solid black";
+            td1.style.padding = "8px";
+            row1.appendChild(td1);
+    
+            let td2 = document.createElement("td");
+            td2.textContent = region.y;
+            td2.style.border = "1px solid black";
+            td2.style.padding = "8px";
+            row2.appendChild(td2);
+        }
+    
+        tbody.appendChild(row1);
+        tbody.appendChild(row2);
+    
+        table.appendChild(tbody);
+    
+        tableContainer.appendChild(table);
     }
-  
     tableDiv.appendChild(tableContainer);
 }
   

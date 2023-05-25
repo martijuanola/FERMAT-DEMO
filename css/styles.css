@@ -40,19 +40,18 @@ h2 {
 .table-container {
     width: 100%;
     overflow-x: auto;
-  }
+}
   
-  .data-table {
+.data-table {
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
-  }
+}
   
-  .data-table th,
-  .data-table td {
+.data-table th, .data-table td {
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
+}
   
