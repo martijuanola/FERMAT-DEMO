@@ -1,3 +1,5 @@
+"use strict";
+
 /* ********** CLASSES ********** */
 
 class Regio {
@@ -49,7 +51,6 @@ class Regio {
 }
 
 
-
 /* ********** CONSTANTS ********** */
 
 /**
@@ -57,7 +58,6 @@ class Regio {
  * @type {number}
  */
 const c = 1;
-
 
 const default_n = 1;
 
@@ -73,11 +73,25 @@ let ampladaRegio = canvas_x;
 
 /* ********** VARIABLES ********** */
 
+// PRINCIPALS
+
 /**
- * Indica si s'ha de pintar o no.
- * @type {boolean}
+ * Conjunt de Regions del canvas. La mida haurà de ser N+1. On la 0 no es té en compte per dibuixar però si per calcular
+ * la y(0) d'inici.
+ * @type {Regio[]}
  */
-let activat = false;
+let regions = [];
+
+let snell_y = [];
+
+// SETEJABLES
+
+/**
+ * Nombre de regions.
+ * @type {number}
+ */
+let N = 10;
+
 /**
  * Valor màxim del canvi aleatori en y(i).
  * @type {number}
@@ -85,10 +99,26 @@ let activat = false;
 let delta = 10;
 
 /**
- * Nombre de regions.
+ * Angle inicial.
  * @type {number}
  */
-let N = 10;
+let angle_inicial = Math.PI/8;
+
+// OBTINGUDES
+
+//TODO: pot ser una funció
+let temps_propagacio_total = 0;
+
+//TODO: pot ser una funció
+let distancia_total_calculada = 0;
+
+// INTERNES
+
+/**
+ * Indica si s'ha de pintar o no.
+ * @type {boolean}
+ */
+let activat = false;
 
 /**
  * N modificada per la caixeta de text. Es fa servir aquesta quan es selecciona amb el botó.
@@ -101,32 +131,6 @@ let next_N = 10;
  * @type {number}
  */
 let iteracions = 0;
-
-//TODO: pot ser una funció
-let temps_propagacio_total = 0;
-
-//TODO: pot ser una funció
-let distancia_total_calculada = 0;
-
-
-
-/**
- * Conjunt de Regions del canvas. La mida haurà de ser N+1. On la 0 no es té en compte per dibuixar però si per calcular
- * la y(0) d'inici.
- * @type {*[]}
- */
-let regions = [];
-
-//TODO: store values of y and avoid calculating it every draw function
-let snell_y = [];
-
-//TODO: fer servir array d'objectes
-let y = []; // Coordenades aleatòries y de la trajectòria
-
-//TODO: això estarà a dintre dels objectes
-let n1, n2; // Índexs de refracció dels medis
-let v1, v2; // Velocitat propagació de la llum en el dos medis
-
 
 /* ********** FUNCIONS BÀSIQUES P5.JS ********** */
 
@@ -174,7 +178,6 @@ function set_next_N(value) {
 
 /**
  * Cridat pel boto de SET N.
- * @param value
  */
 function update_regions() {
     pause_iterations() // para execució
@@ -215,25 +218,24 @@ function update_regions() {
     draw_regions(); // redibuixem les regions
 }
 
-
-function update_valors_n() {
-    for (let i = 1; i <= N; i++) {
-        regions[i].update_n_value;
-    }
-}
-
 //TODO: ACABAR, hauria de resetejar valors a aleatoris
 function setup_valors() {
     update_valors_n();
 
     draw_canvas_vora();
     draw_regions();
-    final_y = draw_trajectoria_snell();
+    const final_y = draw_trajectoria_snell();
     setup_random_y_trajectories(final_y);
     draw_trajectoria_llum();
     taula(); //dibuixem la taula
 
     reset_iteracions(); //reset iteracions
+}
+
+function update_valors_n() {
+    for (let i = 1; i <= N; i++) {
+        regions[i].update_n_value;
+    }
 }
 
 //TODO: ACABAR, hauria de resetejar valors a aleatoris
@@ -252,7 +254,7 @@ function pause_iterations() {
 
 /* ********** ELEMENTS INTERACCIÓ VISUALS ********** */
 
-//TODO: solucionar problema quan s'envia un 0
+//TODO: posar min i max
 function crea_N_textbox() {
     let textbox = createInput(N.toString(), "number");
     textbox.parent("N-textbox"); // posem el textbox en el contenidor HTML
@@ -306,8 +308,6 @@ function taula() {
     
         // it cadad regio i fem columna
         for (let i = startRegion; i <= endRegion; i++) {
-            let region = regions[i];
-    
             let th = document.createElement("th");
             th.textContent = i;
             th.style.border = "1px solid black";
@@ -325,7 +325,8 @@ function taula() {
         // iterem per la informació(atributs) que te cada regió i fem una fila per cada atribut
         let row1 = document.createElement("tr");
         let row2 = document.createElement("tr");
-    
+        let row3 = document.createElement("tr");
+
         let td1 = document.createElement("td");
         td1.textContent = "n";
         td1.style.border = "1px solid black";
@@ -337,6 +338,12 @@ function taula() {
         td2.style.border = "1px solid black";
         td2.style.padding = "8px";
         row2.appendChild(td2);
+
+        let td3 = document.createElement("td");
+        td3.textContent = "y esperada";
+        td3.style.border = "1px solid black";
+        td3.style.padding = "8px";
+        row3.appendChild(td3);
   
         // iterem cada regio i fem celes per cada columna
         for (let i = startRegion; i <= endRegion; i++) {
@@ -353,11 +360,18 @@ function taula() {
             td2.style.border = "1px solid black";
             td2.style.padding = "8px";
             row2.appendChild(td2);
+
+            let td3 = document.createElement("td");
+            td3.textContent = snell_y[i];
+            td3.style.border = "1px solid black";
+            td3.style.padding = "8px";
+            row3.appendChild(td3);
         }
     
         tbody.appendChild(row1);
         tbody.appendChild(row2);
-    
+        tbody.appendChild(row3);
+
         table.appendChild(tbody);
     
         tableContainer.appendChild(table);
@@ -378,7 +392,6 @@ function draw_canvas_vora() {
     rect(0, 0, width, height);
 }
 
-//TODO: s'haurà de canviar per evitar processar la primera regió
 /**
  * Dibuixem les N regions uniformes on calculem la coordenada x de cada regió en funció del seu índex
  */
@@ -394,7 +407,6 @@ function draw_regions() {
     }
 }
 
-//TODO: s'haurà de canviar per evitar processar la primera regió
 /**
  * Dibuixem la trajectòria de la llum
  */
@@ -410,15 +422,18 @@ function draw_trajectoria_llum() {
 }
 
 /**
- * Dibuixa la trajectòria de Snell de la llum
+ * Dibuixa la trajectòria de Snell de la llum.
+ * Actualitza els valors de snell,
  */
 function draw_trajectoria_snell() {
-    stroke(0, 255, 0);
+    stroke(0, 255, 0, 126);
     strokeWeight(3)
 
+    snell_y = [];
 
-    let angle_anterior = PI/8;
+    let angle_anterior = angle_inicial;
     let y_anterior = regions[0].y;
+    snell_y.push(y_anterior);
 
     for (let i = 1; i <= N; i++) {
         let x1 = map(i-1, 0, N, 0, width);
@@ -435,35 +450,11 @@ function draw_trajectoria_snell() {
 
         y_anterior = y_nova;
         angle_anterior=angle_nou;
+        snell_y.push(y_anterior);
     }
     return y_anterior;
 }
 
-
-/* ********** ALTRES ********** */
-
-
-//TODO: will be deprecated
-//Setegem paràmetres de l'experiment
-function setParameters(index1, index2) {
-    n1 = index1; // índex refracció primer medi
-    n2 = index2; // Índex de refracció segon medi
-    v1 = c / n1; // Velocitat propagació de la llum en el primer medi
-    v2 = c / n2; // Velocitat propagació de la llum en el segon medi
-}
-
-//TODO: will be deprecated
-function apartat_a() {
-    setParameters(1, 1.5);
-}
-
-//TODO: will be deprecated
-function apartat_b() {
-    setParameters(1.5, 1.33);
-}
-
-
-//--------------------------------------------------
 
 function display_iteracions() {
     let iterationsDiv = document.getElementById("iterations");
