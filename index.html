@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- fav.ico -->
-    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="icon" type="image/png" href="images/favicon.ico">
     <!-- Imports necessaris per afegir els estils i bootstrap! (tot compilat perquè funcioni en local)-->
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script src="lib/jquery-3.6.0.min.js"></script>
@@ -36,42 +36,38 @@
     </div>
     <div class="container-fluid mida-fila d-flex flex-column pintat-bg">
         <div class="row h-25">
-            <div class="col-md-2 vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
-                <h3> Paràmetres </h3>
-                <div class="row">
-                    <div class="col">
+            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
+                <div class="row mt-3">
+                    <div class="col-md-2 pintat-bg vora-custom">
+                        <h3> Paràmetres </h3>
                         <label>Nombre Regions:</label>
                         <div id="N-textbox"></div>
                         <div class="col">
                             <button type="button" class="btn btn-primary active" onclick="update_regions()">SET N</button>
                         </div>
-                    </div>
-                    <div class="col">
+
                         <label>Delta:</label>
                         <div id="container-delta"></div>
-                    </div>
-                    <div class="col">
+
                         <button type="button" class="btn btn-primary active" onclick="setup_valors()">SETUP/RESET</button>
-                    </div>
-                    <div class="col">
+
                         <button type="button" class="btn btn-primary active" onclick="start_iterations()">START!</button>
                         <button type="button" class="btn btn-primary active" onclick="pause_iterations()">PAUSE</button>
                     </div>
                 </div>
             </div>
-            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
-<!--                <h3> Valors </h3>-->
-<!--                <div id="yValues" style="height: 200px; overflow-y: scroll;"></div> &lt;!&ndash; fer que sigui scroll: si contingut > height &ndash;&gt;-->
+            <div class="col-md-2 pintat-bg vora-custom">
                 <div class="row mt-3">
                     <div class="col">
                         <h3>Valors genèrics</h3>
-                        <ul>
-                            <li id="distancia-calculada"> </li>
-                            <li id="temps-prop-calculat"> </li>
-                            <li id="iterations"> </li>
-                            <li> Distancia real calculada </li>
-                            <li> Error en el càlcul: </li>
-                        </ul>
+
+                        <p>Iteracions = <a id="iterations"></a></p>
+
+                        <p>Temps de Propagació Total = <a id="temps"></a></p>
+                        <p>Distància Total = <a id="distancia"></a></p>
+
+                        <p>Temps de Propagació Total Esperat = <a id="temps-esperat"></a></p>
+                        <p>Distància Total Esperat = <a id="distancia-esperada"></a></p>
                     </div>
                 </div>
             </div>

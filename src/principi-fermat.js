@@ -106,11 +106,10 @@ let angle_inicial = Math.PI/8;
 
 // OBTINGUDES
 
-//TODO: pot ser una funció
-let temps_propagacio_total = 0;
-
-//TODO: pot ser una funció
-let distancia_total_calculada = 0;
+let temps = 0;
+let distancia = 0;
+let temps_esperat = 0;
+let distancia_esperada = 0;
 
 // INTERNES
 
@@ -146,6 +145,7 @@ function setup() {
     crea_delta_slider();
 
     draw_canvas_vora();
+    display_valors_generics();
 }
 
 /**
@@ -161,11 +161,8 @@ function draw() {
         draw_trajectoria_llum();
         draw_trajectoria_snell();
         calcular_trajectoria();
-        display_iteracions();
         taula();
-        display_temps_propagacio_calculat();
-        display_trajectoria_calculada();
-
+        display_valors_generics();
         iteracions++;
     }
 }
@@ -175,6 +172,7 @@ function draw() {
 function set_next_N(value) {
     next_N = value; // actualitzem valor N
 }
+
 
 /**
  * Cridat pel boto de SET N.
@@ -187,7 +185,12 @@ function update_regions() {
     N = next_N; // actualitzem valor N
     ampladaRegio = canvas_x/N;
 
-    regions = [] //fem que l'array de regions torni a tenir els valor correctes
+    regions = [];
+    snell_y = [];
+    temps = 0;
+    distancia = 0;
+    temps_esperat = 0;
+    distancia_esperada = 0;
 
     let refractionTextboxDiv = document.getElementById("refraction-textboxes");
     refractionTextboxDiv.innerHTML = "";
@@ -216,20 +219,29 @@ function update_regions() {
         else regions.push(new Regio(default_n, 0, null));
     }
     draw_regions(); // redibuixem les regions
+    display_valors_generics();
 }
 
 //TODO: ACABAR, hauria de resetejar valors a aleatoris
 function setup_valors() {
-    update_valors_n();
+    pause_iterations() // para execució
+    reset_iteracions(); //reset iteracions
+    temps = 0;
+    distancia = 0;
+    temps_esperat = 0;
+    distancia_esperada = 0;
 
+    update_valors_n();
     draw_canvas_vora();
     draw_regions();
-    const final_y = draw_trajectoria_snell();
+    const final_y = calcular_tarjectoria_snell();
     setup_random_y_trajectories(final_y);
+    draw_trajectoria_snell();
     draw_trajectoria_llum();
     taula(); //dibuixem la taula
-
     reset_iteracions(); //reset iteracions
+    display_valors_generics();
+
 }
 
 function update_valors_n() {
@@ -425,11 +437,10 @@ function draw_trajectoria_llum() {
  * Dibuixa la trajectòria de Snell de la llum.
  * Actualitza els valors de snell,
  */
-function draw_trajectoria_snell() {
-    stroke(0, 255, 0, 126);
-    strokeWeight(3)
-
+function calcular_tarjectoria_snell() {
     snell_y = [];
+    distancia_esperada = 0;
+    temps_esperat = 0;
 
     let angle_anterior = angle_inicial;
     let y_anterior = regions[0].y;
@@ -442,11 +453,14 @@ function draw_trajectoria_snell() {
         let n_anterior = regions[i-1].n;
         let n = regions[i].n;
 
-
         let angle_nou = asin((n_anterior / n) * sin(angle_anterior));
         let y_nova = y_anterior + ampladaRegio * tan(angle_nou);
 
-        line(x1, y_anterior, x2, y_nova);
+        let dx = dist(x1, y_anterior, x2, y_nova); //distancia euclidea entre regió i-i+1
+        let dt = dx / regions[i].v;
+
+        distancia_esperada += dx;
+        temps_esperat += dt;
 
         y_anterior = y_nova;
         angle_anterior=angle_nou;
@@ -455,29 +469,32 @@ function draw_trajectoria_snell() {
     return y_anterior;
 }
 
+function draw_trajectoria_snell() {
+    stroke(0, 255, 0, 126);
+    strokeWeight(3)
 
-function display_iteracions() {
-    let iterationsDiv = document.getElementById("iterations");
-    iterationsDiv.innerHTML = "Iteracions: " + iteracions;
+    for (let i = 0; i < N; i++) {
+        let x1 = map(i, 0, N, 0, width);
+        let x2 = map(i + 1, 0, N, 0, width);
+        line(x1, snell_y[i], x2, snell_y[i+1]);
+    }
 }
+
 
 function reset_iteracions() {
     iteracions = 0;
-    display_iteracions();
+    document.getElementById("iterations").innerHTML = iteracions;
 }
 
+/* PASSAR VALORS A HTML */
 
-function display_temps_propagacio_calculat() {
-    let tempsDiv = document.getElementById("temps-prop-calculat");
-    tempsDiv.innerHTML = "Temps de propagació calculat: " + temps_propagacio_total;
+function display_valors_generics() {
+    document.getElementById("iterations").innerHTML = iteracions;
+    document.getElementById("temps").innerHTML = temps.toFixed(2);
+    document.getElementById("distancia").innerHTML = distancia.toFixed(2);
+    document.getElementById("temps-esperat").innerHTML = temps_esperat.toFixed(2);
+    document.getElementById("distancia-esperada").innerHTML = distancia_esperada.toFixed(2);
 }
-
-
-function display_trajectoria_calculada() {
-    let distanciaDiv = document.getElementById("distancia-calculada");
-    distanciaDiv.innerHTML = "Trajectòria calculada de la llum: " + distancia_total_calculada;
-}
-
 
 //Inicialitzem les coordenades y aleatòriament
 function setup_random_y_trajectories(final_y) {
@@ -559,7 +576,7 @@ function calcular_trajectoria() {
     if (t_prop_nou < t_prop) {
         regions[i]._y = y_nova;
 
-        temps_propagacio_total = t_prop_nou;
-        distancia_total_calculada = calcular_distancia_calculada();
+        temps = t_prop_nou;
+        distancia = calcular_distancia_calculada();
     }
 }
