@@ -1,6 +1,7 @@
 /* ********** CLASSES ********** */
 
 class Regio {
+
     /**
      * Índex de refracció uniforme en la regió.
      */
@@ -9,18 +10,15 @@ class Regio {
      * Component y del punt d'intersecció del raig en la superfície dreta de la regió.
      */
     _y;
-    /**
-     * Velocitat de propagació de la llum uniforme en la regió.
-     */
-    _v; //TODO: segurament pot ser calculada
 
+    input;
 
     /* CONSTRUCTORS */
 
-    constructor(n, y, v) {
+    constructor(n, y, input) {
         this._n = n;
         this._y = y;
-        this._v = v;
+        this.input = input;
     }
 
     /* GETTERS */
@@ -34,12 +32,21 @@ class Regio {
     }
 
     get v() {
-        return this._v;
+        return c / this.n;
     }
 
-    //TODO: funció per obtenir coordenades de N donada les anteriors
+    get input() {
+        return this.input;
+    }
+
+    get update_n_value() {
+        this._n = this.input.valueAsNumber;
+        return this._n;
+    }
 
 }
+
+
 
 /* ********** CONSTANTS ********** */
 
@@ -49,11 +56,17 @@ class Regio {
  */
 const c = 1;
 
+
+const default_n = 1;
+
+const canvas_x = 800;
+const canvas_y = 400;
+
 /**
  * Amplada de cada Regió.
  * @type {number}
  */
-const ampladaRegio = 1;
+let ampladaRegio = canvas_x;
 
 
 /* ********** VARIABLES ********** */
@@ -67,7 +80,7 @@ let activat = false;
  * Valor màxim del canvi aleatori en y(i).
  * @type {number}
  */
-let delta = 20;
+let delta = 10;
 
 /**
  * Nombre de regions.
@@ -102,6 +115,9 @@ let distancia_total_calculada = 0;
  */
 let regions = [];
 
+//TODO: store values of y and avoid calculating it every draw function
+let snell_y = [];
+
 //TODO: fer servir array d'objectes
 let y = []; // Coordenades aleatòries y de la trajectòria
 
@@ -117,25 +133,12 @@ let v1, v2; // Velocitat propagació de la llum en el dos medis
  * Mètode propi de p5.js.
  */
 function setup() {
-    let canvas = createCanvas(800, 400);
+    let canvas = createCanvas(canvas_x, canvas_y);
     canvas.parent("myCanvas");
 
     crea_N_textbox();
-    //crea_delta_slider();
-    //Settejar valors inicial de les diferents n(i)
-    for (let i = 0; i <= N; i++) {
-        let n = 1;
-        let y_reg = y[i]; 
-        let v = c / n;
-    
-        let region = new Regio(n, y_reg, v);
-        regions.push(region);
-    }
+    crea_delta_slider();
 
-    update_regions();
-    
-    apartat_a(); //S'haurà de borrar.
-    //setup_random_y_trajectories();
     draw_canvas_vora();
 }
 
@@ -151,12 +154,14 @@ function draw() {
         draw_regions();
         draw_trajectoria_llum();
         draw_trajectoria_snell();
-        print_y_valors();
-        taula();    
+        //taula();
         calcular_trajectoria();
+
         display_iteracions();
         display_temps_propagacio_calculat();
         display_trajectoria_calculada();
+
+        iteracions++;
     }
 }
 
@@ -176,61 +181,57 @@ function update_regions() {
     draw_canvas_vora(); // fons blanc   
 
     N = next_N; // actualitzem valor N
+    ampladaRegio = canvas_x/N;
 
     regions = [] //fem que l'array de regions torni a tenir els valor correctes
-    //MIRAR-HO BÉ!
-    for (let i = 0; i <= N; i++) {
-        let n = 1;
-        let y_reg = y[i];
-        let v = c / n;
-  
-        let region = new Regio(n, y_reg, v);
-        regions.push(region);
-    }
-    crea_refraction_textboxes(); //crea els textboxes dels indexs
-    //setup_random_y_trajectories(); //actualitzem els valor de y dels objectes Regió
 
-    draw_regions(); // redibuixem les regions
-}
-
-function crea_refraction_textboxes() {
     let refractionTextboxDiv = document.getElementById("refraction-textboxes");
     refractionTextboxDiv.innerHTML = "";
 
+    for (let i = 0; i <= N; i++) {
+        //Crear label i input
+        if (i > 0) {
+            let label = document.createElement("label");
+            label.setAttribute("for", "refraction-" + i);
+            label.innerText = "n" + i + ": ";
+            let input = document.createElement("input");
+            input.setAttribute("type", "number");
+            input.setAttribute("id", "refraction-" + i);
+            input.setAttribute("min", "1");
+            input.setAttribute("step", "0.1");
+            input.value = default_n;
+
+            input.style.width = "50px";
+            input.style.height = "20px";
+            input.style.fontSize = "12px";
+            refractionTextboxDiv.appendChild(label);
+            refractionTextboxDiv.appendChild(input);
+
+            regions.push(new Regio(default_n, 0, input));
+        }
+        else regions.push(new Regio(default_n, 0, null));
+    }
+    draw_regions(); // redibuixem les regions
+}
+
+
+function update_valors_n() {
     for (let i = 1; i <= N; i++) {
-        let label = document.createElement("label");
-        label.setAttribute("for", "refraction-" + i);
-        label.innerText = "n" + i + ": ";
-
-        let input = document.createElement("input");
-        input.setAttribute("type", "number");
-        input.setAttribute("id", "refraction-" + i);
-        input.setAttribute("min", "1");
-        input.setAttribute("step", "0.1");
-
-        input.style.width = "50px";
-        input.style.height = "20px";
-        input.style.fontSize = "12px";
-
-        refractionTextboxDiv.appendChild(label);
-        refractionTextboxDiv.appendChild(input);
+        regions[i].update_n_value;
     }
 }
-  
 
 //TODO: ACABAR, hauria de resetejar valors a aleatoris
 function setup_valors() {
-    console.log("SETUP");
-    setup_random_y_trajectories();
+    update_valors_n();
+
     draw_canvas_vora();
     draw_regions();
+    final_y = draw_trajectoria_snell();
+    setup_random_y_trajectories(final_y);
     draw_trajectoria_llum();
-    draw_trajectoria_snell()
-    print_y_valors();
-    taula();
-    crea_refraction_textboxes();
+
     reset_iteracions(); //reset iteracions
-    console.log(regions);
 }
 
 //TODO: ACABAR, hauria de resetejar valors a aleatoris
@@ -305,7 +306,7 @@ function draw_trajectoria_llum() {
     for (let i = 0; i < N; i++) {
         let x1 = map(i, 0, N, 0, width);
         let x2 = map(i + 1, 0, N, 0, width);
-        line(x1, y[i], x2, y[i + 1]);
+        line(x1, regions[i].y, x2, regions[i+1].y);
     }
 }
 
@@ -314,26 +315,29 @@ function draw_trajectoria_llum() {
  */
 function draw_trajectoria_snell() {
     stroke(0, 255, 0);
-    strokeWeight(3);
+    strokeWeight(3)
 
-    for (let i = 0; i < N; i++) {
-        let x1 = map(i, 0, N, 0, width);
-        let x2 = map(i + 1, 0, N, 0, width);
 
-        let n1 = regions[i]._n; // index refraccio regio actual
-        let n2 = regions[i + 1]._n; // index refraccio regio seguent
+    let angle_anterior = PI/8;
+    let y_anterior = regions[0].y;
 
-        let y1 = regions[i]._y; // coordenada y regio actual
-        let y2 = regions[i + 1]._y; // coordenada y regio seguent
+    for (let i = 1; i <= N; i++) {
+        let x1 = map(i-1, 0, N, 0, width);
+        let x2 = map(i, 0, N, 0, width);
 
-        let angle1 = atan2(y2 - y1, x2 - x1); // angle incidencia
-        let angle2 = asin((n1 / n2) * sin(angle1)); // angle refraccio
+        let n_anterior = regions[i-1].n;
+        let n = regions[i].n;
 
-        let y1_snell = y1 + ampladaRegio * tan(angle1); // coordeanda y extrem regio
-        let y2_snell = y2 - ampladaRegio * tan(angle2); // coordeanda y extrem seguent regio
 
-        line(x1, y1_snell, x2, y2_snell);
+        let angle_nou = asin((n_anterior / n) * sin(angle_anterior));
+        let y_nova = y_anterior + ampladaRegio * tan(angle_nou);
+
+        line(x1, y_anterior, x2, y_nova);
+
+        y_anterior = y_nova;
+        angle_anterior=angle_nou;
     }
+    return y_anterior;
 }
 
 
@@ -362,22 +366,6 @@ function apartat_b() {
 
 //--------------------------------------------------
 
-function print_y_valors() {
-    let yValuesDiv = document.getElementById("yValues");
-    yValuesDiv.innerHTML = ""; // eliminem els y valors anteriors
-
-    let ul = document.createElement("ul");
-
-    for (let i = 0; i <= N; i++) {
-      let li = document.createElement("li");
-      li.innerHTML = "y[" + i + "]: " + y[i].toFixed(7);
-      ul.appendChild(li);
-    }
-
-    yValuesDiv.appendChild(ul);
-}
-
-
 function display_iteracions() {
     let iterationsDiv = document.getElementById("iterations");
     iterationsDiv.innerHTML = "Iteracions: " + iteracions;
@@ -402,18 +390,17 @@ function display_trajectoria_calculada() {
 
 
 //Inicialitzem les coordenades y aleatòriament
-function setup_random_y_trajectories() {
-    for (let i = 0; i <= N; i++) {
-        y[i] = random(height); // fem servir com alçada la mida del canvas
-        regions[i]._y = y[i]; //update dels objectes (en teoria va)
+function setup_random_y_trajectories(final_y) {
+    for (let i = 1; i < N; i++) {
+        regions[i]._y = random(height); //update dels objectes (en teoria va)
     }
-    print_y_valors();
+    regions[N]._y = final_y;
 }
 
 
 function update_delta(value) {
     delta = value; // actualitzem valor delta
-    setup_random_y_trajectories(); // Actualitzem el valor de les trajectories random basades en la nova N
+    //setup_random_y_trajectories(); // Actualitzem el valor de les trajectories random basades en la nova N
     calcular_trajectoria();
     draw_regions(); // redibuixem les regions
     reset_iteracions(); //resetem iteracions
@@ -424,9 +411,8 @@ function update_delta(value) {
 function calcular_temps_propagacio_llum() {
     let t = 0;
     for (let i = 0; i < N; i++) {
-      let dx = dist(i, y[i], i + 1, y[i + 1]); //distancia euclidea entre regió i-i+1
-      let v = (i < N-1) ? v1 : v2; //tots els índexs són uniformes i son n1, menys el darrer que és n2
-      t += dx / v;
+      let dx = dist(i, regions[i].y, i + ampladaRegio, regions[i + 1].y); //distancia euclidea entre regió i-i+1
+      t += dx / regions[i+1].v;
     }
     return t;
 }
@@ -436,7 +422,7 @@ function calcular_temps_propagacio_llum() {
 function calcular_distancia_calculada() {
     let distancia = 0;
     for (let i = 0; i < N; i++) {
-        let dx = dist(i, y[i], i + 1, y[i + 1]);
+        let dx = dist(i, regions[i].y, i + 1, regions[i + 1].y);
         distancia += dx;
     }
     return distancia;
@@ -445,38 +431,45 @@ function calcular_distancia_calculada() {
 
 //Fem un canvi random en les y en una regio i acualitzem el temps de propagació
 function random_canvi_y() {
-    let y_noves = y.slice(); // copia l'array de les y en un nou array coordenades actuals
-    let i = floor(random(1, N)); // escollim una regió aleatòriament
-    
+
+    let y_noves = [];
+    regions.forEach((element) => {
+        y_noves.push(element.y);
+    });
+
+    const i = floor(random(1, N)); // escollim una regió aleatòriament
+    let y_canviada;
+
     let trobat = false;
     while (!trobat) {
         let dy = random(-delta, delta); // calculem un canvi aleatori en y(i)
         if (dy+y_noves[i] >= 0 && dy+y_noves[i] <= height) {
             y_noves[i] += dy;
+            y_canviada = y_noves[i];
             trobat = true;
         }
     }
 
-    let t_update = 0;
-    for (let j = 0; j < N; j++) {
-        let dx = dist(j, y_noves[j], j + 1, y_noves[j + 1]);
-        let v = (j < N-1) ? v1 : v2;
-        t_update += dx / v;
+    let t = 0;
+    for (let i = 0; i < N; i++) {
+        let dx = dist(i, y_noves[i], i + ampladaRegio, y_noves[i + 1]); //distancia euclidea entre regió i-i+1
+        t += dx / regions[i+1].v;
     }
-    return [t_update,y_noves];
+
+    return [t, i, y_canviada];
 }
 
 
 //Calculeu si aquest canvi fa disminuir el temps que triga la llum. 
 //En cas afirmatiu, accepteu el canvi i continueu el procés.*/
-function calcular_trajectoria() { 
-    iteracions++;
+function calcular_trajectoria() {
     let t_prop = calcular_temps_propagacio_llum();
-    let [t_prop_nou, y_noves] = random_canvi_y();
+    let [t_prop_nou, i, y_nova] = random_canvi_y();
 
     //comprobem si el nou canvi disminueix el temps de propagació
     if (t_prop_nou < t_prop) {
-        y = y_noves.slice(); // acceptem el canvi
+        regions[i]._y = y_nova;
+
         temps_propagacio_total = t_prop_nou;
         distancia_total_calculada = calcular_distancia_calculada();
     }
