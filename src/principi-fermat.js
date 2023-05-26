@@ -68,7 +68,7 @@ const canvas_y = 400;
  * En tant per u.
  * @type {number}
  */
-const error_threshold = 0.01;
+const error_threshold = 0.0005;
 
 
 /* ********** VARIABLES ********** */
