@@ -126,18 +126,23 @@ let distancia_esperada = 0;
 let activat = false;
 
 /**
- * N modificada per la caixeta de text. Es fa servir aquesta quan es selecciona amb el botó.
- * @type {number}
- */
-let next_N = 10;
-
-/**
  * Nombre d'iteracions
  * @type {number}
  */
 let iteracions = 0;
 
 /* ********** FUNCIONS BÀSIQUES P5.JS ********** */
+
+function add_listeners_botons() {
+    document.addEventListener("keyup", function(event) {
+        if (event.code === "KeyN") update_regions(document.getElementById('N-textbox').children[0].value);
+        else if (event.code === "KeyC") setup_valors();
+        else if (event.code === "KeyS") start_iterations();
+        else if (event.code === "KeyP") pause_iterations();
+
+    });
+
+}
 
 /**
  * Codi executat una sola vegada a l'inici del programa.
@@ -152,6 +157,8 @@ function setup() {
 
     draw_canvas_vora();
     display_valors_generics();
+
+    add_listeners_botons();
 }
 
 /**
@@ -166,7 +173,7 @@ function draw() {
         draw_regions();
         draw_trajectoria_llum();
         draw_trajectoria_snell();
-        calcular_trajectoria();
+        update_trajectoria();
         taula();
         display_valors_generics();
         iteracions++;
@@ -176,20 +183,20 @@ function draw() {
 
 /* ********** MÈTODES CRIDATS PER ELEMENTS VISUALS ********** */
 
-function set_next_N(value) {
-    next_N = value; // actualitzem valor N
-}
-
-
 /**
  * Cridat pel boto de SET N.
  */
-function update_regions() {
+function update_regions(new_N) {
+    if (new_N < 2 || new_N > 100) {
+        alert("N out of range [2, 100]!");
+        return;
+    }
+    if (!confirm("Estàs segur d'actualitzar el valor d'N? Perdràs l'execució actual!")) return
     pause_iterations() // para execució
     reset_iteracions(); //reset iteracions
     draw_canvas_vora(); // fons blanc   
 
-    N = next_N; // actualitzem valor N
+    N = new_N; // actualitzem valor N
     ampladaRegio = canvas_x/N;
 
     regions = [];
@@ -247,6 +254,8 @@ function setup_valors() {
     setup_random_y_trajectories(final_y);
     draw_trajectoria_snell();
     draw_trajectoria_llum();
+    temps = calcular_temps_propagacio_llum();
+    distancia = calcular_distancia_calculada();
     taula(); //dibuixem la taula
     reset_iteracions(); //reset iteracions
     display_valors_generics();
@@ -278,17 +287,13 @@ function pause_iterations() {
 function crea_N_textbox() {
     let textbox = createInput(N.toString(), "number");
     textbox.parent("N-textbox"); // posem el textbox en el contenidor HTML
-    textbox.input(() => set_next_N(int(textbox.value()))); // actualitzem el valor de regions quan el valor del textbox canvia
+
+    textbox.elt.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) update_regions(int(textbox.value()));
+    });
 
     textbox.attribute("min", "2"); // min
     textbox.attribute("max", "200"); // max
-
-    textbox.elt.addEventListener("input", function() {
-        if (int(textbox.value()) > 200) {
-            textbox.value("200");
-        }
-    });
-
     textbox.style("width", "60px");
     textbox.style("height", "35px");
     textbox.style("font-size", "12px");
@@ -573,7 +578,7 @@ function setup_random_y_trajectories(final_y) {
 
 function update_delta(value) {
     delta = value; // actualitzem valor delta
-    calcular_trajectoria();
+    update_trajectoria();
     draw_regions(); // redibuixem les regions
     reset_iteracions(); //resetem iteracions
 }
@@ -635,7 +640,7 @@ function random_canvi_y() {
 
 //Calculeu si aquest canvi fa disminuir el temps que triga la llum. 
 //En cas afirmatiu, accepteu el canvi i continueu el procés.*/
-function calcular_trajectoria() {
+function update_trajectoria() {
     let t_prop = calcular_temps_propagacio_llum();
     let [t_prop_nou, i, y_nova] = random_canvi_y();
 
@@ -643,7 +648,7 @@ function calcular_trajectoria() {
     if (t_prop_nou < t_prop) {
         regions[i]._y = y_nova;
 
-        temps = t_prop_nou;
+        temps = calcular_temps_propagacio_llum();
         distancia = calcular_distancia_calculada();
     }
 }
