@@ -68,7 +68,7 @@ const canvas_y = 400;
  * En tant per u.
  * @type {number}
  */
-const error_threshold = 0.0005;
+const error_threshold = 0.005;
 
 
 /* ********** VARIABLES ********** */
@@ -139,7 +139,15 @@ function add_listeners_botons() {
         else if (event.code === "KeyR") setup_valors();
         else if (event.code === "KeyS") start_iterations();
         else if (event.code === "KeyP") pause_iterations();
+        else if (event.code === "Space") {
+            if (snell_y.length > 0) activat = !activat;
+        }
 
+    });
+    window.addEventListener('keydown', function(e) {
+        if(e.code === "Space" && e.target === document.body) {
+            e.preventDefault();
+        }
     });
 }
 
@@ -166,7 +174,10 @@ function setup() {
  */
 function draw() {
     if (activat) { //Només fa les iteracions si està activat
-        if (get_diferencia_temps_relatiu() < error_threshold) pause_iterations();
+        if (get_diferencia_ys() < error_threshold) {
+            alert("S'ha convergit!!");
+            pause_iterations();
+        }
         draw_fons();
         draw_regions();
         draw_trajectoria_llum();
@@ -298,7 +309,7 @@ function crea_N_textbox() {
 }
 
 function crea_delta_slider() {
-    let slider = createSlider(2, 100, delta);
+    let slider = createSlider(1, 100, delta);
     slider.class("slider"); // apliquem la classe "slider" de css a l'element slider
     slider.parent("container-delta"); // posem el sliders en el contenidor HTML
     slider.input(() => update_delta(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
@@ -554,6 +565,7 @@ function display_valors_generics() {
 
     document.getElementById("dif-temps-rel").innerHTML = (get_diferencia_temps_relatiu()*100).toFixed(2)+ "%";
     document.getElementById("dif-distancia-rel").innerHTML = (get_diferencia_dist_relatiu()*100).toFixed(2)+ "%"
+    document.getElementById("dif-ys").innerHTML = (get_diferencia_ys()*100).toFixed(2)+ "%"
 }
 
 function get_diferencia_temps_relatiu(){
@@ -564,6 +576,15 @@ function get_diferencia_temps_relatiu(){
 function get_diferencia_dist_relatiu(){
     if (distancia_esperada === 0) return null;
     return (Math.abs(distancia_esperada-distancia))/(distancia_esperada);
+}
+
+function get_diferencia_ys(){
+    if (snell_y.length <= 0) return null;
+    let d = 0;
+    for (let i = 1; i < N; i++) {
+        d += Math.abs(regions[i].y-snell_y[i])/canvas_y;
+    }
+    return d/N;
 }
 
 //Inicialitzem les coordenades y aleatòriament

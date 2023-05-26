@@ -39,7 +39,7 @@
       <div class="row h-25">
           <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
               <div class="row mt-3">
-                  <div class="col pintat-bg">
+                  <div class="col pintat-bg ">
                       <h3> Paràmetres </h3>
                       <div class="row mt-3">
                           <div class="col">
@@ -77,20 +77,28 @@
               </div>
           </div>
           <div class="col-md-2 pintat-bg vora-custom">
-              <div class="row mt-3">
+              <div style="font-size:10px;" class="row mt-3">
                   <div class="col">
                       <h3>Valors genèrics</h3>
 
                       <p>Iteracions = <a id="iterations"></a></p>
+                      <hr>
+                      <p>Temps de Propagació Total = <a id="temps"></a> s</p>
+                      <p>Distància Total = <a id="distancia"></a> m</p>
+                      <hr>
+                      <p>Temps de Propagació Total Esperat = <a id="temps-esperat"></a> m</p>
+                      <p>Distància Total Esperada = <a id="distancia-esperada"></a> s</p>
+                      <hr>
+                      <p>Dif. Temps Relativa(%) = <a id="dif-temps-rel"></a></p>
+                      <p>Dif. Distància Relativa(%) = <a id="dif-distancia-rel"></a></p>
+                      <p>Dif. ys Relativa(%) = <a id="dif-ys"></a></p>
+                  </div>
+                  <div class="col">
+                      <h3>Constants</h3>
 
-                      <p>Temps de Propagació Total = <a id="temps"></a></p>
-                      <p>Distància Total = <a id="distancia"></a></p>
-
-                      <p>Temps de Propagació Total Esperat = <a id="temps-esperat"></a></p>
-                      <p>Distància Total Esperada = <a id="distancia-esperada"></a></p>
-
-                      <p>Dif. Temps Relatiu(%) = <a id="dif-temps-rel"></a></p>
-                      <p>Dif. Distància Relatiu(%) = <a id="dif-distancia-rel"></a></p>
+                      <p>Velocitat de la Llum = 1 m/s</p>
+                      <p>Amplada Canvas = 1 m</p>
+                      <p>Alçada Canvas = 1 m</p>
                   </div>
               </div>
           </div>
