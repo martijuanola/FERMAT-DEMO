@@ -415,6 +415,36 @@ function draw_canvas_vora() {
     rect(0, 0, width, height);
 }
 
+
+/* Diccionari de parells [n,colorRGB] */
+/* https://pixelandpoly.com/ior.html */
+const refraction_colors = {
+    1.0 : [255,255,255], // aire
+    1.33: [35,137,214],  // aigua
+    1.5: [168,254,255],  // vidre
+    2.41: [203,227,240], // diamant
+    1.52: [0, 204, 0],   // esmeralda
+    1.4: [255, 0, 0],    // rubi
+    1.7: [255, 153, 0],  // topazi
+    1.46: [8, 37, 103],  // safir
+    1.6: [128, 0, 128],  // ametista (lila clar)
+    1.9: [255, 0, 255],  // perla (magenta)
+    1.61: [255, 255, 0], // sulfur d'arsènic (groc)
+    1.81: [255,217,103], // pirita (groc claret)
+    1.36: [226,234,209]  // acetona
+}
+
+/* Donada una clau (n), retorna el color associat en RGB del diccionari refraction_color */
+function index2color(refractiveIndex) {
+    const color = refraction_colors[refractiveIndex];
+
+    if (color) {
+        return color;
+    } else {
+        return [60,60,60]; //no hi ha l'índex al diccionari
+    }
+}
+
 /**
  * Dibuixem les N regions uniformes on calculem la coordenada x de cada regió en funció del seu índex
  */
@@ -422,11 +452,14 @@ function draw_regions() {
     stroke(0,0,0);
     strokeWeight(2);
 
-    for (let i = 1; i < N; i++) {
-        //map(valor a convertir, limit inf rang actual, limit sup rang actual,
-        //limit inf rang desitjat, limit sup rang desitjat)
-        let x = map(i, 0, N, 0, width); //calculem on hem de partir les regions en base a la mida del canvas
-        line(x, 0, x, height); //line: traça linia entre dos punts line(x1,y1,x2,y2)
+    for (let i = 1; i <= N; i++) {
+        let x = map(i-1, 0, N, 0, width);
+        line(x, 0, x, height);
+
+        let n = regions[i]._n;
+        let color = index2color(n);
+        fill(color[0], color[1], color[2]);
+        rect(x, 0, ampladaRegio, height);
     }
 }
 
