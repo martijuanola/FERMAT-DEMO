@@ -34,12 +34,12 @@ h2 {
 
 #region-info > div {
     width: 100%;
-    overflow-x: none;
+    overflow-x: auto;
 }
 
 .table-container {
     width: 100%;
-    overflow-x: auto;
+    overflow-x: none;
 }
   
 .data-table {
@@ -54,4 +54,63 @@ h2 {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-  
+
+.btn-setup-reset {
+    background-color: orange;
+    color: white;
+}
+
+.btn-start {
+    background-color: green;
+    color: white;
+}
+
+.btn-pause {
+    background-color: red;
+    color: white;
+}
+
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    cursor: pointer;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #0080ff; /* Change the background color to blue */
+    cursor: pointer;
+}
+
+@media (max-width: 767px) {
+    .container-fluid.centrar {
+        text-align: center;
+    }
+
+    .mida-fila {
+        padding: 10px;
+    }
+
+    .vora-custom {
+        border: none;
+    }
+
+    .vora-custom h3 {
+        margin-top: 10px;
+    }
+
+    .afegir-marge {
+        margin-top: 10px;
+    }
+}

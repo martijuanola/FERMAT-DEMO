@@ -200,7 +200,8 @@ function update_regions() {
         if (i > 0) {
             let label = document.createElement("label");
             label.setAttribute("for", "refraction-" + i);
-            label.innerText = "n" + i + ": ";
+            label.innerHTML = "n" + '<sub>' + i + '</sub>' + ": ";
+
             let input = document.createElement("input");
             input.setAttribute("type", "number");
             input.setAttribute("id", "refraction-" + i);
@@ -211,6 +212,7 @@ function update_regions() {
             input.style.width = "50px";
             input.style.height = "20px";
             input.style.fontSize = "12px";
+            input.style.marginRight = "8px";
             refractionTextboxDiv.appendChild(label);
             refractionTextboxDiv.appendChild(input);
 
@@ -266,19 +268,28 @@ function pause_iterations() {
 
 /* ********** ELEMENTS INTERACCIÓ VISUALS ********** */
 
-//TODO: posar min i max
 function crea_N_textbox() {
     let textbox = createInput(N.toString(), "number");
     textbox.parent("N-textbox"); // posem el textbox en el contenidor HTML
     textbox.input(() => set_next_N(int(textbox.value()))); // actualitzem el valor de regions quan el valor del textbox canvia
 
-    textbox.style("width", "50px");
-    textbox.style("height", "20px");
+    textbox.attribute("min", "2"); // min
+    textbox.attribute("max", "200"); // max
+
+    textbox.elt.addEventListener("input", function() {
+        if (int(textbox.value()) > 200) {
+            textbox.value("200");
+        }
+    });
+
+    textbox.style("width", "60px");
+    textbox.style("height", "35px");
     textbox.style("font-size", "12px");
 }
 
 function crea_delta_slider() {
     let slider = createSlider(2, 100, delta);
+    slider.class("slider"); // apliquem la classe "slider" de css a l'element slider
     slider.parent("container-delta"); // posem el sliders en el contenidor HTML
     slider.input(() => update_delta(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
 }

@@ -34,54 +34,77 @@
             <li><b>[PAUSE]</b> - Es paren les iteracions però no s'esborra el canvas ni es canvien valors.</li>
         </ol>
     </div>
-    <div class="container-fluid mida-fila d-flex flex-column pintat-bg">
-        <div class="row h-25">
-            <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
-                <div class="row mt-3">
-                    <div class="col-md-2 pintat-bg vora-custom">
-                        <h3> Paràmetres </h3>
-                        <label>Nombre Regions:</label>
-                        <div id="N-textbox"></div>
-                        <div class="col">
-                            <button type="button" class="btn btn-primary active" onclick="update_regions()">SET N</button>
-                        </div>
+  <div class="container-fluid mida-fila d-flex flex-column pintat-bg">
+      <div class="row h-25">
+          <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
+              <div class="row mt-3">
+                  <div class="col pintat-bg">
+                      <h3> Paràmetres </h3>
+                      <div class="row mt-3">
+                          <div class="col">
+                              <div class="row mt-2">
+                                  <div class="col">
+                                      <label for="N-textbox" class="mb-0">Nombre Regions:</label>
+                                  </div>
+                                  <div class="col">
+                                      <div id="N-textbox"></div>
+                                  </div>
+                              </div>
+                              <div class="row mt-2">
+                                  <div class="col">
+                                      <label class="mb-0">Delta:</label>
+                                  </div>
+                                  <div class="col">
+                                      <div id="container-delta"></div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="mt-3">
+                          <button type="button" class="btn btn-primary active" onclick="update_regions()">SET N</button>
+                      </div>
+                      <div class="mt-2">
+                          <button type="button" class="btn btn-setup-reset active" onclick="setup_valors()">SETUP/RESET</button>
+                      </div>
+                      <div class="mt-2">
+                          <button type="button" class="btn btn-start active" onclick="start_iterations()">START!</button>
+                      </div>
+                      <div class="mt-2">
+                          <button type="button" class="btn btn-pause active" onclick="pause_iterations()">PAUSE</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-2 pintat-bg vora-custom">
+              <div class="row mt-3">
+                  <div class="col">
+                      <h3>Valors genèrics</h3>
 
-                        <label>Delta:</label>
-                        <div id="container-delta"></div>
+                      <p>Iteracions = <a id="iterations"></a></p>
 
-                        <button type="button" class="btn btn-primary active" onclick="setup_valors()">SETUP/RESET</button>
+                      <p>Temps de Propagació Total = <a id="temps"></a></p>
+                      <p>Distància Total = <a id="distancia"></a></p>
 
-                        <button type="button" class="btn btn-primary active" onclick="start_iterations()">START!</button>
-                        <button type="button" class="btn btn-primary active" onclick="pause_iterations()">PAUSE</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2 pintat-bg vora-custom">
-                <div class="row mt-3">
-                    <div class="col">
-                        <h3>Valors genèrics</h3>
-
-                        <p>Iteracions = <a id="iterations"></a></p>
-
-                        <p>Temps de Propagació Total = <a id="temps"></a></p>
-                        <p>Distància Total = <a id="distancia"></a></p>
-
-                        <p>Temps de Propagació Total Esperat = <a id="temps-esperat"></a></p>
-                        <p>Distància Total Esperat = <a id="distancia-esperada"></a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-8 centrar pintat-bg vora-custom">
-                <h3> Demostració del principi</h3>
-                <div id="myCanvas"></div>
-                <div id="refraction-textboxes"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col centrar afegir-marge">
-                <div id="region-info"></div>
-            </div>
-        </div>
-    </div>
+                      <p>Temps de Propagació Total Esperat = <a id="temps-esperat"></a></p>
+                      <p>Distància Total Esperat = <a id="distancia-esperada"></a></p>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-8 centrar pintat-bg vora-custom">
+              <div class="row mt-2">
+                  <div class="col">
+                    <h3> Demostració del principi</h3>
+                    <div id="myCanvas"></div>
+                    <div id="refraction-textboxes"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="row mt-3">
+          <div class="col centrar">
+              <div id="region-info"></div>
+          </div>
+      </div>
+  </div>
 </body>
 </html>
