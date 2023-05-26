@@ -65,10 +65,10 @@ const canvas_x = 800;
 const canvas_y = 400;
 
 /**
- * Amplada de cada Regió.
+ * En tant per u.
  * @type {number}
  */
-let ampladaRegio = canvas_x;
+const error_threshold = 0.01;
 
 
 /* ********** VARIABLES ********** */
@@ -103,6 +103,12 @@ let delta = 10;
  * @type {number}
  */
 let angle_inicial = Math.PI/8;
+
+/**
+ * Amplada de cada Regió.
+ * @type {number}
+ */
+let ampladaRegio = canvas_x;
 
 // OBTINGUDES
 
@@ -164,6 +170,7 @@ function draw() {
         taula();
         display_valors_generics();
         iteracions++;
+        if (get_diferencia_temps_relatiu() < error_threshold) activat = false;
     }
 }
 
@@ -534,10 +541,25 @@ function reset_iteracions() {
 
 function display_valors_generics() {
     document.getElementById("iterations").innerHTML = iteracions;
+
     document.getElementById("temps").innerHTML = temps.toFixed(2);
     document.getElementById("distancia").innerHTML = distancia.toFixed(2);
+
     document.getElementById("temps-esperat").innerHTML = temps_esperat.toFixed(2);
     document.getElementById("distancia-esperada").innerHTML = distancia_esperada.toFixed(2);
+
+    document.getElementById("dif-temps-rel").innerHTML = (get_diferencia_temps_relatiu()*100).toFixed(2)+ "%";
+    document.getElementById("dif-distancia-rel").innerHTML = (get_diferencia_dist_relatiu()*100).toFixed(2)+ "%"
+}
+
+function get_diferencia_temps_relatiu(){
+    if (distancia_esperada === 0) return null;
+    return (Math.abs(temps_esperat-temps))/(temps_esperat);
+}
+
+function get_diferencia_dist_relatiu(){
+    if (distancia_esperada === 0) return null;
+    return (Math.abs(distancia_esperada-distancia))/(distancia_esperada);
 }
 
 //Inicialitzem les coordenades y aleatòriament
