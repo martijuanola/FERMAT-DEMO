@@ -136,12 +136,11 @@ let iteracions = 0;
 function add_listeners_botons() {
     document.addEventListener("keyup", function(event) {
         if (event.code === "KeyN") update_regions(document.getElementById('N-textbox').children[0].value);
-        else if (event.code === "KeyC") setup_valors();
+        else if (event.code === "KeyR") setup_valors();
         else if (event.code === "KeyS") start_iterations();
         else if (event.code === "KeyP") pause_iterations();
 
     });
-
 }
 
 /**
@@ -155,7 +154,7 @@ function setup() {
     crea_N_textbox();
     crea_delta_slider();
 
-    draw_canvas_vora();
+    draw_fons();
     display_valors_generics();
 
     add_listeners_botons();
@@ -167,9 +166,8 @@ function setup() {
  */
 function draw() {
     if (activat) { //Només fa les iteracions si està activat
-        background(255);
-
-        draw_canvas_vora();
+        if (get_diferencia_temps_relatiu() < error_threshold) pause_iterations();
+        draw_fons();
         draw_regions();
         draw_trajectoria_llum();
         draw_trajectoria_snell();
@@ -177,7 +175,6 @@ function draw() {
         taula();
         display_valors_generics();
         iteracions++;
-        if (get_diferencia_temps_relatiu() < error_threshold) activat = false;
     }
 }
 
@@ -194,7 +191,7 @@ function update_regions(new_N) {
     if (!confirm("Estàs segur d'actualitzar el valor d'N? Perdràs l'execució actual!")) return
     pause_iterations() // para execució
     reset_iteracions(); //reset iteracions
-    draw_canvas_vora(); // fons blanc   
+    draw_fons(); // fons blanc
 
     N = new_N; // actualitzem valor N
     ampladaRegio = canvas_x/N;
@@ -242,13 +239,14 @@ function update_regions(new_N) {
 function setup_valors() {
     pause_iterations() // para execució
     reset_iteracions(); //reset iteracions
+
     temps = 0;
     distancia = 0;
     temps_esperat = 0;
     distancia_esperada = 0;
-
     update_valors_n();
-    draw_canvas_vora();
+
+    draw_fons();
     draw_regions();
     const final_y = calcular_tarjectoria_snell();
     setup_random_y_trajectories(final_y);
@@ -421,7 +419,8 @@ function taula() {
 /**
  * Dibuixa el fons del canvas.
  */
-function draw_canvas_vora() {
+function draw_fons() {
+    background(255);
     stroke(0, 0, 0);
     strokeWeight(3);
     rect(0, 0, width, height);
@@ -578,9 +577,6 @@ function setup_random_y_trajectories(final_y) {
 
 function update_delta(value) {
     delta = value; // actualitzem valor delta
-    update_trajectoria();
-    draw_regions(); // redibuixem les regions
-    reset_iteracions(); //resetem iteracions
 }
 
 
