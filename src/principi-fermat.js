@@ -137,6 +137,34 @@ let iteracions = 0;
 
 /* ********** FUNCIONS BÀSIQUES P5.JS ********** */
 
+function load_escenari(escenari) {
+    if (!confirm("Estàs segur de carregar l'escenari " + escenari + "?")) return;
+    switch (escenari) {
+        case 0:
+            update_regions(4)
+            document.getElementById("refraction-1").value = 1;
+            document.getElementById("refraction-2").value = 1.33;
+            document.getElementById("refraction-3").value = 1.5;
+            document.getElementById("refraction-4").value = 1;
+            delta = 10;
+            angle_inicial = 0;
+            y_inicial = canvas_y/2;
+            break;
+        case 1:
+            update_regions(4)
+            document.getElementById("refraction-1").value = 1;
+            document.getElementById("refraction-2").value = 1;
+            document.getElementById("refraction-3").value = 1.5;
+            document.getElementById("refraction-4").value = 1.5;
+            delta = 10;
+            angle_inicial = 25 *Math.PI/180;
+            y_inicial = 25;
+            break;
+        default: alert("Escenari no implementat."); return;
+    }
+    setup_valors();
+}
+
 function add_listeners_botons() {
     document.addEventListener("keyup", function(event) {
         if (event.code === "KeyN") update_regions(document.getElementById('N-textbox').children[0].value);
@@ -146,6 +174,8 @@ function add_listeners_botons() {
         else if (event.code === "Space") {
             if (snell_y.length > 0) activat = !activat;
         }
+        else if (event.key >= "0" && event.key <= "9") load_escenari(int(event.key));
+
 
     });
     window.addEventListener('keydown', function(e) {
