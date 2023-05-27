@@ -40,47 +40,71 @@
           <div class="col-md-2 pintat-bg vora-custom"> <!-- de banda a banda de la pantall bootstrap divideix "el viewport en 12 parts/columnes "-->
               <div class="row mt-3">
                   <div class="col pintat-bg ">
-                      <h3> Paràmetres </h3>
+                      <div class="centrar"><h3> Paràmetres </h3></div>
                       <div class="row mt-3">
                           <div class="col">
-                              <div class="row mt-2">
-                                  <div class="col">
-                                      <label class="mb-0" style="font-size:13px;">nº Regions(N):</label>
-                                  </div>
-                                  <div class="col">
-                                      <div id="N-textbox"></div>
-                                  </div>
-                              </div>
-                              <div class="row mt-2">
-                                  <div class="col">
-                                      <label class="mb-0">Delta:</label>
-                                  </div>
-                                  <div class="col">
-                                      <div id="container-delta"></div>
-                                  </div>
-                              </div>
+                              <label class="mb-0" style="font-size:13px;"><b>Regions(N)</b>:</label>
+                          </div>
+                          <div class="col">
+                              <div id="N-textbox"></div>
                           </div>
                       </div>
-                      <div class="mt-3">
-                          <button id="b-n" type="button" class="btn btn-primary active" onclick="update_regions(document.getElementById('N-textbox').children[0].value);">SET N</button>
+                      <div class="row mt-3 justify-content-center">
+                          <button id="b-n" type="button" class="btn btn-primary btn-n active" onclick="update_regions(document.getElementById('N-textbox').children[0].value);">SET N</button>
                       </div>
-                      <div class="mt-2">
+
+                      <hr>
+
+                      <div class="row mt-2 justify-content-center">
                           <button id="b-setup" type="button" class="btn btn-setup-reset active" onclick="setup_valors()">SETUP/RESET</button>
                       </div>
-                      <div class="mt-2">
+
+                      <hr>
+
+                      <div class="row mt-2 justify-content-center">
                           <button id="b-start" type="button" class="btn btn-start active" onclick="start_iterations()">START!</button>
                       </div>
-                      <div class="mt-2">
-                          <button id="b-pause" type="button" class="btn btn-pause active" onclick="pause_iterations()">PAUSE</button>
+                      <div class=" row mt-2 pb-2 justify-content-center">
+                          <button id="b-pause" type="button" class="btn  btn-pause active" onclick="pause_iterations()">PAUSE</button>
                       </div>
+                      <div class="row mt-2">
+                          <div class="col">
+                              <label class="mb-0">Delta:</label>
+                          </div>
+                          <div class="col">
+                              <div id="container-delta"></div>
+                          </div>
+                      </div>
+
+                      <hr>
+
+                      <div class="row mt-2">
+                          <div class="col">
+                              <label class="mb-0">Angle incident:</label>
+                          </div>
+                          <div class="col">
+                              <div id="container-angle"></div>
+                          </div>
+                      </div>
+                      <div class="row mt-2">
+                          <div class="col">
+                              <label class="mb-0">Y incident:</label>
+                          </div>
+                          <div class="col">
+                              <div id="container-y"></div>
+                          </div>
+                      </div>
+
                   </div>
               </div>
           </div>
           <div class="col-md-2 pintat-bg vora-custom">
-              <div style="font-size:10px;" class="row mt-3">
+              <div class="row mt-3" style="font-size:10px;" >
                   <div class="col">
-                      <h3>Valors genèrics</h3>
-
+                      <div class="centrar"><h3>Variables</h3></div>
+                      <p>Angle d'incidència = <a id="angle"></a></p>
+                      <p>Y d'incidència = <a id="y"></a></p>
+                      <hr>
                       <p>Iteracions = <a id="iterations"></a></p>
                       <hr>
                       <p>Temps de Propagació Total = <a id="temps"></a> s</p>
@@ -94,7 +118,7 @@
                       <p>Dif. ys Relativa(%) = <a id="dif-ys"></a></p>
                   </div>
                   <div class="col">
-                      <h3>Constants</h3>
+                      <div class="centrar"><h3>Constants</h3></div>
 
                       <p>Velocitat de la Llum = 1 m/s</p>
                       <p>Amplada Canvas = 800 m</p>

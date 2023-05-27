@@ -55,17 +55,24 @@ h2 {
     text-overflow: ellipsis;
 }
 
+.btn-n {
+    width:85%;
+}
+
 .btn-setup-reset {
+    width:85%;
     background-color: orange;
     color: white;
 }
 
 .btn-start {
+    width:85%;
     background-color: green;
     color: white;
 }
 
 .btn-pause {
+    width:85%;
     background-color: red;
     color: white;
 }

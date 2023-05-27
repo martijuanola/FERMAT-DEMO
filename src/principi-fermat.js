@@ -64,6 +64,8 @@ const default_n = 1;
 const canvas_x = 800;
 const canvas_y = 400;
 
+const floating_point = 2;
+
 /**
  * En tant per u.
  * @type {number}
@@ -102,7 +104,9 @@ let delta = 10;
  * Angle inicial.
  * @type {number}
  */
-let angle_inicial = 25*(Math.PI/180);
+let angle_inicial = 10*(Math.PI/180);
+
+let y_inicial= canvas_y/2;
 
 /**
  * Amplada de cada Regió.
@@ -161,6 +165,8 @@ function setup() {
 
     crea_N_textbox();
     crea_delta_slider();
+    crea_angle_slider();
+    crea_y_slider();
 
     draw_fons();
     display_valors_generics();
@@ -312,8 +318,33 @@ function crea_delta_slider() {
     let slider = createSlider(1, 100, delta);
     slider.class("slider"); // apliquem la classe "slider" de css a l'element slider
     slider.parent("container-delta"); // posem el sliders en el contenidor HTML
-    slider.input(() => update_delta(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
+    slider.input(() => delta = slider.value()); // actualitzem el valor de regions quan el valor del slider canvia
 }
+
+function update_angle(valor) {
+    angle_inicial = valor*Math.PI/180;
+    setup_valors();
+}
+
+function crea_angle_slider() {
+    let slider = createSlider(-90, 90, angle_inicial ,1);
+    slider.class("slider"); // apliquem la classe "slider" de css a l'element slider
+    slider.parent("container-angle"); // posem el sliders en el contenidor HTML
+    slider.input(() => update_angle(slider.value())) // actualitzem el valor de regions quan el valor del slider canvia
+}
+
+function update_y_inicial(value) {
+    y_inicial = value;
+    setup_valors()
+}
+
+function crea_y_slider() {
+    let slider = createSlider(-canvas_y*0.5, 1.5*canvas_y, y_inicial, 1);
+    slider.class("slider"); // apliquem la classe "slider" de css a l'element slider
+    slider.parent("container-y"); // posem el sliders en el contenidor HTML
+    slider.input(() => update_y_inicial(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
+}
+
 
 function taula() {
     let tableDiv = document.getElementById("region-info");
@@ -400,13 +431,13 @@ function taula() {
             row1.appendChild(td1);
     
             let td2 = document.createElement("td");
-            td2.textContent = region.y;
+            td2.textContent = region.y.toFixed(floating_point);
             td2.style.border = "1px solid black";
             td2.style.padding = "8px";
             row2.appendChild(td2);
 
             let td3 = document.createElement("td");
-            td3.textContent = snell_y[i];
+            td3.textContent = snell_y[i].toFixed(floating_point);
             td3.style.border = "1px solid black";
             td3.style.padding = "8px";
             row3.appendChild(td3);
@@ -463,7 +494,7 @@ function index2color(refractiveIndex) {
     if (color) {
         return color;
     } else {
-        return [60,60,60]; //no hi ha l'índex al diccionari
+        return [230,230,230]; //no hi ha l'índex al diccionari
     }
 }
 
@@ -471,8 +502,8 @@ function index2color(refractiveIndex) {
  * Dibuixem les N regions uniformes on calculem la coordenada x de cada regió en funció del seu índex
  */
 function draw_regions() {
-    stroke(0,0,0);
-    strokeWeight(2);
+    stroke(0,0,0,100);
+    strokeWeight(1);
 
     for (let i = 1; i <= N; i++) {
         let x = map(i-1, 0, N, 0, width);
@@ -509,7 +540,7 @@ function calcular_tarjectoria_snell() {
     temps_esperat = 0;
 
     let angle_anterior = angle_inicial;
-    let y_anterior = regions[0].y;
+    let y_anterior = y_inicial;
     snell_y.push(y_anterior);
 
     for (let i = 1; i <= N; i++) {
@@ -555,17 +586,20 @@ function reset_iteracions() {
 /* PASSAR VALORS A HTML */
 
 function display_valors_generics() {
+    document.getElementById("angle").innerHTML = (angle_inicial*180/Math.PI);
+    document.getElementById("y").innerHTML = y_inicial;
+
     document.getElementById("iterations").innerHTML = iteracions;
 
-    document.getElementById("temps").innerHTML = temps.toFixed(2);
-    document.getElementById("distancia").innerHTML = distancia.toFixed(2);
+    document.getElementById("temps").innerHTML = temps.toFixed(floating_point);
+    document.getElementById("distancia").innerHTML = distancia.toFixed(floating_point);
 
-    document.getElementById("temps-esperat").innerHTML = temps_esperat.toFixed(2);
-    document.getElementById("distancia-esperada").innerHTML = distancia_esperada.toFixed(2);
+    document.getElementById("temps-esperat").innerHTML = temps_esperat.toFixed(floating_point);
+    document.getElementById("distancia-esperada").innerHTML = distancia_esperada.toFixed(floating_point);
 
-    document.getElementById("dif-temps-rel").innerHTML = (get_diferencia_temps_relatiu()*100).toFixed(2)+ "%";
-    document.getElementById("dif-distancia-rel").innerHTML = (get_diferencia_dist_relatiu()*100).toFixed(2)+ "%"
-    document.getElementById("dif-ys").innerHTML = (get_diferencia_ys()*100).toFixed(2)+ "%"
+    document.getElementById("dif-temps-rel").innerHTML = (get_diferencia_temps_relatiu()*100).toFixed(floating_point)+ "%";
+    document.getElementById("dif-distancia-rel").innerHTML = (get_diferencia_dist_relatiu()*100).toFixed(floating_point)+ "%"
+    document.getElementById("dif-ys").innerHTML = (get_diferencia_ys()*100).toFixed(floating_point)+ "%"
 }
 
 function get_diferencia_temps_relatiu(){
@@ -589,15 +623,11 @@ function get_diferencia_ys(){
 
 //Inicialitzem les coordenades y aleatòriament
 function setup_random_y_trajectories(final_y) {
+    regions[0]._y = y_inicial;
     for (let i = 1; i < N; i++) {
         regions[i]._y = random(height); //update dels objectes (en teoria va)
     }
     regions[N]._y = final_y;
-}
-
-
-function update_delta(value) {
-    delta = value; // actualitzem valor delta
 }
 
 
