@@ -160,6 +160,50 @@ function load_escenari(escenari) {
             angle_inicial = 25 *Math.PI/180;
             y_inicial = 25;
             break;
+        case 2:
+            update_regions(4)
+            document.getElementById("refraction-1").value = 1;
+            document.getElementById("refraction-2").value = 1.33;
+            document.getElementById("refraction-3").value = 1.9;
+            document.getElementById("refraction-4").value = 1;
+            delta = 10;
+            angle_inicial = 25 *Math.PI/180;
+            y_inicial = 25;
+            break;
+        case 3:
+            update_regions(9)
+            document.getElementById("refraction-1").value = 1;
+            document.getElementById("refraction-2").value = 2.41;
+            document.getElementById("refraction-3").value = 1;
+            document.getElementById("refraction-4").value = 2.41;
+            document.getElementById("refraction-5").value = 1;
+            document.getElementById("refraction-6").value = 2.41;
+            document.getElementById("refraction-7").value = 1;
+            document.getElementById("refraction-8").value = 2.41;
+            document.getElementById("refraction-9").value = 1;
+            delta = 10;
+            angle_inicial = 33 *Math.PI/180;
+            y_inicial = 15;
+            break;
+        case 4:
+            update_regions(13)
+            document.getElementById("refraction-1").value = 1;
+            document.getElementById("refraction-2").value = 1.33;
+            document.getElementById("refraction-3").value = 1.36;
+            document.getElementById("refraction-4").value = 1.41;
+            document.getElementById("refraction-5").value = 1.46;
+            document.getElementById("refraction-6").value = 1.5;
+            document.getElementById("refraction-7").value = 1.52;
+            document.getElementById("refraction-8").value = 1.6;
+            document.getElementById("refraction-9").value = 1.61;
+            document.getElementById("refraction-10").value = 1.7;
+            document.getElementById("refraction-11").value = 1.81;
+            document.getElementById("refraction-12").value = 1.9;
+            document.getElementById("refraction-13").value = 2.41;
+            delta = 10;
+            angle_inicial = 33 *Math.PI/180;
+            y_inicial = 15;
+            break;
         default: alert("Escenari no implementat."); return;
     }
     setup_valors();
@@ -218,7 +262,7 @@ function draw() {
         draw_regions();
         draw_trajectoria_llum();
         draw_trajectoria_snell();
-        update_trajectoria();
+        update_trajectoria_step();
         taula();
         display_valors_generics();
         iteracions++;
@@ -710,10 +754,16 @@ function update_trajectoria() {
 
     if (t_nova < t_actual) {
         regions[i]._y += dy;
+        temps = t_nova;
+        distancia = calcular_distancia_calculada();
+        return true;
     }
-
-    temps = t_nova;
-    distancia = calcular_distancia_calculada();
+    return false;
 }
 
-//DCEL.edges.push({"vBID": v1ID, "fRID": f3ID, "eNID": e6IDT, "eTID": e4IDT});
+function update_trajectoria_step() {
+    let done = update_trajectoria();
+    while(!done) {
+        done = update_trajectoria();
+    }
+}
