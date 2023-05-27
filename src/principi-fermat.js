@@ -90,7 +90,7 @@ let snell_y = [];
  * Nombre de regions.
  * @type {number}
  */
-let N = 10;
+let N = 5;
 
 /**
  * Valor màxim del canvi aleatori en y(i).
@@ -102,7 +102,7 @@ let delta = 10;
  * Angle inicial.
  * @type {number}
  */
-let angle_inicial = Math.PI/8;
+let angle_inicial = 25*(Math.PI/180);
 
 /**
  * Amplada de cada Regió.
@@ -624,48 +624,36 @@ function calcular_distancia_calculada() {
 }
 
 
-//Fem un canvi random en les y en una regio i acualitzem el temps de propagació
-function random_canvi_y() {
+/**
+ * Aplica un canvi de màxim delta sobre una y d'una regió aleatoria només si millora el temps de propagació total.
+ */
+function update_trajectoria() {
 
+    const t_actual = calcular_temps_propagacio_llum();
+
+    //Ys de les regions
     let y_noves = [];
     regions.forEach((element) => {
         y_noves.push(element.y);
     });
 
-    const i = floor(random(1, N)); // escollim una regió aleatòriament
-    let y_canviada;
+    const i = floor(random(1, N));//REGIÓ CANVIADA
+    let dy = random(-delta, delta);//CANVI
+    y_noves[i] += dy;
 
-    let trobat = false;
-    while (!trobat) {
-        let dy = random(-delta, delta); // calculem un canvi aleatori en y(i)
-        if (dy+y_noves[i] >= 0 && dy+y_noves[i] <= height) {
-            y_noves[i] += dy;
-            y_canviada = y_noves[i];
-            trobat = true;
-        }
-    }
-
-    let t = 0;
+    //CALCULAR nou temps, s'hauria de cridar l'altre funció
+    let t_nova = 0;
     for (let i = 0; i < N; i++) {
         let dx = dist(i, y_noves[i], i + ampladaRegio, y_noves[i + 1]); //distancia euclidea entre regió i-i+1
-        t += dx / regions[i+1].v;
+        t_nova += dx / regions[i+1].v;
     }
 
-    return [t, i, y_canviada];
-}
-
-
-//Calculeu si aquest canvi fa disminuir el temps que triga la llum. 
-//En cas afirmatiu, accepteu el canvi i continueu el procés.*/
-function update_trajectoria() {
-    let t_prop = calcular_temps_propagacio_llum();
-    let [t_prop_nou, i, y_nova] = random_canvi_y();
-
-    //comprobem si el nou canvi disminueix el temps de propagació
-    if (t_prop_nou < t_prop) {
-        regions[i]._y = y_nova;
-
-        temps = calcular_temps_propagacio_llum();
-        distancia = calcular_distancia_calculada();
+    if (t_nova < t_actual) {
+        regions[i]._y += dy;
     }
+
+    temps = t_nova;
+    distancia = calcular_distancia_calculada();
 }
+
+//DCEL.edges.push({"vBID": v1ID, "fRID": f3ID, "eNID": e6IDT, "eTID": e4IDT});
