@@ -204,6 +204,110 @@ function load_escenari(escenari) {
             angle_inicial = 33 *Math.PI/180;
             y_inicial = 15;
             break;
+        case 5:
+            update_regions(6)
+            document.getElementById("refraction-1").value = 1;
+            document.getElementById("refraction-2").value = 1.33;
+            document.getElementById("refraction-3").value = 1.36;
+            document.getElementById("refraction-4").value = 1.41;
+            document.getElementById("refraction-5").value = 1.46;
+            document.getElementById("refraction-6").value = 1.5;
+            delta = 40;
+            angle_inicial = 4 *Math.PI/180;
+            y_inicial = 15;
+            break;
+        case 6: //tarda molt en convergir
+            update_regions(10)
+            document.getElementById("refraction-1").value = 1.9;
+            document.getElementById("refraction-2").value = 2.41;
+            document.getElementById("refraction-3").value = 1.9;
+            document.getElementById("refraction-4").value = 2.41;
+            document.getElementById("refraction-5").value = 1.9;
+            document.getElementById("refraction-6").value = 2.41;
+            document.getElementById("refraction-7").value = 1.9;
+            document.getElementById("refraction-8").value = 2.41;
+            document.getElementById("refraction-9").value = 1.9;
+            document.getElementById("refraction-10").value = 2.41;
+            delta = 5;
+            angle_inicial = 0 *Math.PI/180;
+            y_inicial = 100;
+            break;
+        case 7: //aigua i vidre
+            update_regions(6)
+            document.getElementById("refraction-1").value = 1;
+            document.getElementById("refraction-2").value = 1.33;
+            document.getElementById("refraction-3").value = 1.5;
+            document.getElementById("refraction-4").value = 1.33;
+            document.getElementById("refraction-5").value = 1.5;
+            document.getElementById("refraction-6").value = 1.33;
+            delta = 100;
+            angle_inicial = 30 *Math.PI/180;
+            y_inicial = 0;
+            break;
+        case 8: //escenari molt gran
+            update_regions(30)
+            document.getElementById("refraction-1").value = 1;
+            document.getElementById("refraction-2").value = 1.33;
+            document.getElementById("refraction-3").value = 1.36;
+            document.getElementById("refraction-4").value = 1.41;
+            document.getElementById("refraction-5").value = 1.46;
+            document.getElementById("refraction-6").value = 1.5;
+            document.getElementById("refraction-7").value = 1.52;
+            document.getElementById("refraction-8").value = 1.6;
+            document.getElementById("refraction-9").value = 1.61;
+            document.getElementById("refraction-10").value = 1.7;
+            document.getElementById("refraction-11").value = 1;
+            document.getElementById("refraction-12").value = 1.33;
+            document.getElementById("refraction-13").value = 1.36;
+            document.getElementById("refraction-14").value = 1.41;
+            document.getElementById("refraction-15").value = 1.46;
+            document.getElementById("refraction-16").value = 1.5;
+            document.getElementById("refraction-17").value = 1.52;
+            document.getElementById("refraction-18").value = 1.6;
+            document.getElementById("refraction-19").value = 1.61;
+            document.getElementById("refraction-20").value = 1.7;
+            document.getElementById("refraction-21").value = 1;
+            document.getElementById("refraction-22").value = 1.33;
+            document.getElementById("refraction-23").value = 1.36;
+            document.getElementById("refraction-24").value = 1.41;
+            document.getElementById("refraction-25").value = 1.46;
+            document.getElementById("refraction-26").value = 1.5;
+            document.getElementById("refraction-27").value = 1.52;
+            document.getElementById("refraction-28").value = 1.6;
+            document.getElementById("refraction-29").value = 1.61;
+            document.getElementById("refraction-30").value = 1.7;
+            delta = 10;
+            angle_inicial = 0 * Math.PI/180;
+            y_inicial = 150;
+            break;
+        case 9: //cada cop medi menys dens
+            update_regions(22)
+            document.getElementById("refraction-1").value = 2.41;
+            document.getElementById("refraction-2").value = 1;
+            document.getElementById("refraction-3").value = 1.9;
+            document.getElementById("refraction-4").value = 1;
+            document.getElementById("refraction-5").value = 1.7;
+            document.getElementById("refraction-6").value = 1;
+            document.getElementById("refraction-7").value = 1.61;
+            document.getElementById("refraction-8").value = 1;
+            document.getElementById("refraction-9").value = 1.6;
+            document.getElementById("refraction-10").value = 1;
+            document.getElementById("refraction-11").value = 1.52;
+            document.getElementById("refraction-12").value = 1;
+            document.getElementById("refraction-13").value = 1.5;
+            document.getElementById("refraction-14").value = 1;
+            document.getElementById("refraction-15").value = 1.46;
+            document.getElementById("refraction-16").value = 1;
+            document.getElementById("refraction-17").value = 1.41;
+            document.getElementById("refraction-18").value = 1;
+            document.getElementById("refraction-19").value = 1.36;
+            document.getElementById("refraction-20").value = 1;
+            document.getElementById("refraction-21").value = 1.33;
+            document.getElementById("refraction-22").value = 1;
+            delta = 1;
+            angle_inicial = 15 *Math.PI/180;
+            y_inicial = 200;
+            break;
         default: alert("Escenari no implementat."); return;
     }
     setup_valors();
