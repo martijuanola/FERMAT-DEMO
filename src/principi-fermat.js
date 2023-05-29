@@ -16,6 +16,8 @@ class Regio {
      * Objecte de JS que guarda la informació de la textbox
      */
     input;
+    angle_in;
+    angle_out;
 
     /* CONSTRUCTORS */
 
@@ -23,6 +25,8 @@ class Regio {
         this._n = n;
         this._y = y;
         this.input = input;
+        this.angle_in = -1;
+        this.angle_out = -1;
     }
 
     /* GETTERS */
@@ -72,7 +76,6 @@ const floating_point = 2;
  */
 const error_threshold = 0.005;
 
-
 /* ********** VARIABLES ********** */
 
 // PRINCIPALS
@@ -85,6 +88,8 @@ const error_threshold = 0.005;
 let regions = [];
 
 let snell_y = [];
+let snell_angle_in = [];
+let snell_angle_out = [];
 
 // SETEJABLES
 
@@ -104,7 +109,7 @@ let delta = 10;
  * Angle inicial.
  * @type {number}
  */
-let angle_inicial = 10*(Math.PI/180);
+let angle_inicial = toRadiants(10);
 
 let y_inicial= canvas_y/2;
 
@@ -135,6 +140,8 @@ let activat = false;
  */
 let iteracions = 0;
 
+let values_set = false;
+
 /* ********** FUNCIONS BÀSIQUES P5.JS ********** */
 
 function load_escenari(escenari) {
@@ -157,7 +164,7 @@ function load_escenari(escenari) {
             document.getElementById("refraction-3").value = 1.5;
             document.getElementById("refraction-4").value = 1.5;
             delta = 10;
-            angle_inicial = 25 *Math.PI/180;
+            angle_inicial =toRadiants(25);
             y_inicial = 25;
             break;
         case 2:
@@ -167,7 +174,7 @@ function load_escenari(escenari) {
             document.getElementById("refraction-3").value = 1.9;
             document.getElementById("refraction-4").value = 1;
             delta = 10;
-            angle_inicial = 25 *Math.PI/180;
+            angle_inicial = toRadiants(25);
             y_inicial = 25;
             break;
         case 3:
@@ -182,7 +189,7 @@ function load_escenari(escenari) {
             document.getElementById("refraction-8").value = 2.41;
             document.getElementById("refraction-9").value = 1;
             delta = 10;
-            angle_inicial = 33 *Math.PI/180;
+            angle_inicial = toRadiants(33);
             y_inicial = 15;
             break;
         case 4:
@@ -201,7 +208,7 @@ function load_escenari(escenari) {
             document.getElementById("refraction-12").value = 1.9;
             document.getElementById("refraction-13").value = 2.41;
             delta = 10;
-            angle_inicial = 33 *Math.PI/180;
+            angle_inicial = toRadiants(33);
             y_inicial = 15;
             break;
         case 5:
@@ -213,7 +220,7 @@ function load_escenari(escenari) {
             document.getElementById("refraction-5").value = 1.46;
             document.getElementById("refraction-6").value = 1.5;
             delta = 40;
-            angle_inicial = 4 *Math.PI/180;
+            angle_inicial = toRadiants(4);
             y_inicial = 15;
             break;
         case 6: //tarda molt en convergir
@@ -229,7 +236,7 @@ function load_escenari(escenari) {
             document.getElementById("refraction-9").value = 1.9;
             document.getElementById("refraction-10").value = 2.41;
             delta = 5;
-            angle_inicial = 0 *Math.PI/180;
+            angle_inicial = 0;
             y_inicial = 100;
             break;
         case 7: //aigua i vidre
@@ -241,7 +248,7 @@ function load_escenari(escenari) {
             document.getElementById("refraction-5").value = 1.5;
             document.getElementById("refraction-6").value = 1.33;
             delta = 100;
-            angle_inicial = 30 *Math.PI/180;
+            angle_inicial = toRadiants(30);
             y_inicial = 0;
             break;
         case 8: //escenari molt gran
@@ -277,7 +284,7 @@ function load_escenari(escenari) {
             document.getElementById("refraction-29").value = 1.61;
             document.getElementById("refraction-30").value = 1.7;
             delta = 10;
-            angle_inicial = 0 * Math.PI/180;
+            angle_inicial = 0;
             y_inicial = 150;
             break;
         case 9: //cada cop medi menys dens
@@ -305,7 +312,7 @@ function load_escenari(escenari) {
             document.getElementById("refraction-21").value = 1.33;
             document.getElementById("refraction-22").value = 1;
             delta = 1;
-            angle_inicial = 15 *Math.PI/180;
+            angle_inicial = toRadiants(15);
             y_inicial = 200;
             break;
         default: alert("Escenari no implementat."); return;
@@ -322,9 +329,7 @@ function add_listeners_botons() {
         else if (event.code === "Space") {
             if (snell_y.length > 0) activat = !activat;
         }
-        else if (event.key >= "0" && event.key <= "9") load_escenari(int(event.key));
-
-
+        else if (event.key >= "0" && event.key <= "9" && event.ctrlKey) load_escenari(int(event.key));
     });
     window.addEventListener('keydown', function(e) {
         if(e.code === "Space" && e.target === document.body) {
@@ -357,7 +362,7 @@ function setup() {
  * Mètode propi de p5.js
  */
 function draw() {
-    if (activat) { //Només fa les iteracions si està activat
+    if (activat && values_set) { //Només fa les iteracions si està activat
         if (get_diferencia_ys() < error_threshold) {
             alert("S'ha convergit!!");
             pause_iterations();
@@ -391,6 +396,7 @@ function update_regions(new_N) {
     N = new_N; // actualitzem valor N
     ampladaRegio = canvas_x/N;
 
+    values_set = false;
     regions = [];
     snell_y = [];
     temps = 0;
@@ -424,13 +430,12 @@ function update_regions(new_N) {
 
             regions.push(new Regio(default_n, 0, input));
         }
-        else regions.push(new Regio(default_n, 0, null));
+        else regions.push(new Regio(default_n, 0, null,));
     }
     draw_regions(); // redibuixem les regions
     display_valors_generics();
 }
 
-//TODO: ACABAR, hauria de resetejar valors a aleatoris
 function setup_valors() {
     pause_iterations() // para execució
     reset_iteracions(); //reset iteracions
@@ -452,7 +457,7 @@ function setup_valors() {
     taula(); //dibuixem la taula
     reset_iteracions(); //reset iteracions
     display_valors_generics();
-
+    values_set = true;
 }
 
 function update_valors_n() {
@@ -500,7 +505,7 @@ function crea_delta_slider() {
 }
 
 function update_angle(valor) {
-    angle_inicial = valor*Math.PI/180;
+    angle_inicial = toRadiants(valor);
     setup_valors();
 }
 
@@ -523,6 +528,14 @@ function crea_y_slider() {
     slider.input(() => update_y_inicial(slider.value())); // actualitzem el valor de regions quan el valor del slider canvia
 }
 
+
+function toDegrees(rad) {
+    return rad*180/Math.PI;
+}
+
+function toRadiants(deg) {
+    return deg*Math.PI/180;
+}
 
 function taula() {
     let tableDiv = document.getElementById("region-info");
@@ -552,7 +565,7 @@ function taula() {
         th.textContent = "Regió";
         th.style.border = "1px solid black";
         th.style.padding = "8px";
-        th.style.minWidth = "100px"; // amplada minima per cada columna
+        //th.style.minWidth = "50px"; // amplada minima per cada columna
         headerRow.appendChild(th);
     
         // calculem primera i ultima regio de la taula
@@ -565,7 +578,7 @@ function taula() {
             th.textContent = i;
             th.style.border = "1px solid black";
             th.style.padding = "8px";
-            th.style.minWidth = "100px";
+            //th.style.minWidth = "100px";
             headerRow.appendChild(th);
         }
   
@@ -579,6 +592,10 @@ function taula() {
         let row1 = document.createElement("tr");
         let row2 = document.createElement("tr");
         let row3 = document.createElement("tr");
+        let row4 = document.createElement("tr");
+        let row5 = document.createElement("tr");
+        let row6 = document.createElement("tr");
+        let row7 = document.createElement("tr");
 
         let td1 = document.createElement("td");
         td1.textContent = "n";
@@ -597,6 +614,32 @@ function taula() {
         td3.style.border = "1px solid black";
         td3.style.padding = "8px";
         row3.appendChild(td3);
+
+
+        let td4 = document.createElement("td");
+        td4.textContent = "Angle incident esperat";
+        td4.style.border = "1px solid black";
+        td4.style.padding = "8px";
+        row4.appendChild(td4);
+
+        let td5 = document.createElement("td");
+        td5.textContent = "Angle incident";
+        td5.style.border = "1px solid black";
+        td5.style.padding = "8px";
+        row5.appendChild(td5);
+
+        let td6 = document.createElement("td");
+        td6.textContent = "Angle refractat esperat";
+        td6.style.border = "1px solid black";
+        td6.style.padding = "8px";
+        row6.appendChild(td6);
+
+        let td7 = document.createElement("td");
+        td7.textContent = "Angle refractat";
+        td7.style.border = "1px solid black";
+        td7.style.padding = "8px";
+        row7.appendChild(td7);
+
   
         // iterem cada regio i fem celes per cada columna
         for (let i = startRegion; i <= endRegion; i++) {
@@ -619,11 +662,40 @@ function taula() {
             td3.style.border = "1px solid black";
             td3.style.padding = "8px";
             row3.appendChild(td3);
+
+
+            let td4 = document.createElement("td");
+            td4.textContent = toDegrees(snell_angle_in[i]).toFixed(floating_point) + "%";
+            td4.style.border = "1px solid black";
+            td4.style.padding = "8px";
+            row4.appendChild(td4);
+
+            let td5 = document.createElement("td");
+            td5.textContent = toDegrees(regions[i].angle_in).toFixed(floating_point) + "%";
+            td5.style.border = "1px solid black";
+            td5.style.padding = "8px";
+            row5.appendChild(td5);
+
+            let td6 = document.createElement("td");
+            td6.textContent = toDegrees(snell_angle_out[i]).toFixed(floating_point) + "%";
+            td6.style.border = "1px solid black";
+            td6.style.padding = "8px";
+            row6.appendChild(td6);
+
+            let td7 = document.createElement("td");
+            td7.textContent = toDegrees(regions[i].angle_out).toFixed(floating_point) + "%";
+            td7.style.border = "1px solid black";
+            td7.style.padding = "8px";
+            row7.appendChild(td7);
         }
     
         tbody.appendChild(row1);
         tbody.appendChild(row2);
         tbody.appendChild(row3);
+        tbody.appendChild(row4);
+        tbody.appendChild(row5);
+        tbody.appendChild(row6);
+        tbody.appendChild(row7);
 
         table.appendChild(tbody);
     
@@ -714,12 +786,17 @@ function draw_trajectoria_llum() {
  */
 function calcular_tarjectoria_snell() {
     snell_y = [];
+    snell_angle_in = [];
+    snell_angle_out = [];
+
     distancia_esperada = 0;
     temps_esperat = 0;
 
     let angle_anterior = angle_inicial;
     let y_anterior = y_inicial;
     snell_y.push(y_anterior);
+    snell_angle_in.push(-1);
+    snell_angle_out.push(-1);
 
     for (let i = 1; i <= N; i++) {
         let x1 = map(i-1, 0, N, 0, width);
@@ -738,8 +815,12 @@ function calcular_tarjectoria_snell() {
         temps_esperat += dt;
 
         y_anterior = y_nova;
-        angle_anterior=angle_nou;
         snell_y.push(y_anterior);
+
+
+        snell_angle_in.push(angle_anterior);
+        snell_angle_out.push(angle_nou);
+        angle_anterior=angle_nou;
     }
     return y_anterior;
 }
@@ -764,7 +845,7 @@ function reset_iteracions() {
 /* PASSAR VALORS A HTML */
 
 function display_valors_generics() {
-    document.getElementById("angle").innerHTML = (angle_inicial*180/Math.PI);
+    document.getElementById("angle").innerHTML = (toDegrees(angle_inicial)).toFixed(floating_point);
     document.getElementById("y").innerHTML = y_inicial;
 
     document.getElementById("iterations").innerHTML = iteracions;
@@ -806,6 +887,22 @@ function setup_random_y_trajectories(final_y) {
         regions[i]._y = random(height); //update dels objectes (en teoria va)
     }
     regions[N]._y = final_y;
+    calcular_angles_regions();
+}
+
+function get_angle_out_regio(i) {
+    let y1 = regions[i - 1].y;
+    let y2 = regions[i].y;
+    let dy = y2 - y1;
+    return Math.abs(Math.atan(dy / ampladaRegio));
+}
+
+function calcular_angles_regions() {
+    for (let i = 1; i < N; i++) {
+        if (i === 1) regions[i].angle_in = Math.abs(angle_inicial);
+        else regions[i].angle_in = Math.abs(regions[i-1].angle_out);
+        regions[i].angle_out = get_angle_out_regio(i);
+    }
 }
 
 
@@ -858,6 +955,16 @@ function update_trajectoria() {
 
     if (t_nova < t_actual) {
         regions[i]._y += dy;
+
+        regions[i].angle_out = get_angle_out_regio(i);
+        if (i+1 <= N) {
+            regions[i+1].angle_in = regions[i].angle_out;
+            regions[i+1].angle_out = get_angle_out_regio(i+1);
+        }
+        if (i+2 <= N) {
+            regions[i+2].angle_in = regions[i+1].angle_out;
+        }
+
         temps = t_nova;
         distancia = calcular_distancia_calculada();
         return true;
