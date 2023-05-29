@@ -792,7 +792,7 @@ function calcular_tarjectoria_snell() {
     distancia_esperada = 0;
     temps_esperat = 0;
 
-    let angle_anterior = Math.abs(angle_inicial);
+    let angle_anterior = angle_inicial;
     let y_anterior = y_inicial;
     snell_y.push(y_anterior);
     snell_angle_in.push(-1);
@@ -805,7 +805,7 @@ function calcular_tarjectoria_snell() {
         let n_anterior = regions[i-1].n;
         let n = regions[i].n;
 
-        let angle_nou = Math.abs(asin((n_anterior / n) * sin(angle_anterior)));
+        let angle_nou = asin((n_anterior / n) * sin(angle_anterior));
         let y_nova = y_anterior + ampladaRegio * tan(angle_nou);
 
         let dx = dist(x1, y_anterior, x2, y_nova); //distancia euclidea entre regió i-i+1
@@ -818,8 +818,8 @@ function calcular_tarjectoria_snell() {
         snell_y.push(y_anterior);
 
 
-        snell_angle_in.push(angle_anterior);
-        snell_angle_out.push(angle_nou);
+        snell_angle_in.push(Math.abs(angle_anterior));
+        snell_angle_out.push(Math.abs(angle_nou));
         angle_anterior=angle_nou;
     }
     return y_anterior;
